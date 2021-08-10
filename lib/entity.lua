@@ -75,4 +75,7 @@ function Entity:draw()
     love.graphics.pop()
 end
 
+function Entity:onContact(other)
+end
+
 return Entity

@@ -64,4 +64,11 @@ function Tank:thrust(dt, mult)
     self.body:applyForce(self.body:getWorldVector(self.thrustPower * dt * mult, 0))
 end
 
+function Tank:onContact(other)
+    if self.moveTarget and self.moveTarget == other then
+        self.moveTarget.body:destroy()
+        self.moveTarget = nil
+    end
+end
+
 return Tank
