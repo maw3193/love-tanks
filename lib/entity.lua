@@ -1,12 +1,12 @@
 local Class = require "thirdparty/middleclass/middleclass"
-
 local Config = require "lib/config"
+local Utils = require "lib/utils"
 
 local Entity = Class("Entity")
 
 Entity.drawPoint = true
 Entity.drawName = true
---Entity.moveTarget = nil
+Entity.moveTarget = nil
 
 function Entity:initialize(world, x, y, params)
     params = params or {}
@@ -32,6 +32,14 @@ function Entity:drawAllShapes()
     end    
 end
 
+function Entity:calculateBearing(other)
+    local px, py = self.body:getPosition()
+    local ox, oy = other.body:getPosition()
+    local bearing = Utils.bearingFromPositions(px, py, ox, oy)
+    if bearing < 0 then bearing = bearing + 2 * math.pi end
+    return bearing
+end
+
 function Entity:draw()
     local px, py = self.body:getPosition()
     if self.moveTarget then
@@ -42,7 +50,21 @@ function Entity:draw()
     love.graphics.push() -- now in entity-local coordinates
     love.graphics.translate(px, py)
     if self.drawName then
-        local text = table.concat({self.class.name, math.floor(px), math.floor(py)}, ", ")
+        local textData = {
+            self.class.name,
+            math.floor(px),
+            math.floor(py),
+            self.body:getAngle() / math.pi,
+            math.floor(math.deg(self.body:getAngle())),
+        }
+        local angle = math.floor(math.deg(self.body:getAngle()))
+        table.insert(textData, angle)
+        if self.moveTarget then
+            local targetAngle = math.floor(math.deg(self:calculateBearing(self.moveTarget)))
+            table.insert(textData, targetAngle)
+        end
+
+        local text = table.concat(textData, ", ")
         love.graphics.print(text)
     end
     love.graphics.rotate(self.body:getAngle())
@@ -51,21 +73,6 @@ function Entity:draw()
     end
     self:drawAllShapes()
     love.graphics.pop()
-end
-
-function Entity:turn(dt, mult)
-    local angle = self.body:getAngle()
-    angle = angle + dt * mult * self.turnSpeed
-    if angle >= 2 * math.pi then
-        angle = angle - 2 * math.pi
-    elseif angle < 0 then
-        angle = angle + 2 * math.pi
-    end
-    self.body:setAngle(angle)
-end
-
-function Entity:thrust(dt, mult)
-    self.body:applyForce(self.body:getWorldVector(self.thrustPower * dt * mult, 0))
 end
 
 return Entity

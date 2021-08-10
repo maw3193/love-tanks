@@ -14,6 +14,9 @@ function Game:addEntity(entity)
 end
 
 function Game:update(dt)
+    for _,body in ipairs(self.world:getBodies()) do
+        body:getUserData():update(dt)
+    end
     self.world:update(dt)
 end
 

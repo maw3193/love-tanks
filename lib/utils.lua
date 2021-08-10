@@ -10,4 +10,11 @@ function Utils.polygonPoints(radius, pointCount, angle_offset)
     return points
 end
 
+function Utils.bearingFromPositions(x1, y1, x2, y2)
+    local dx = x2 - x1
+    local dy = y2 - y1
+    return math.atan2(dy, dx)
+end
+
+
 return Utils

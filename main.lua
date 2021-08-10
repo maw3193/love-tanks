@@ -9,12 +9,11 @@ local tank2
 local moveTarget
 
 function love.load()
-    
     love.window.setMode(Config.width, Config.height)
     love.window.setTitle("Tanks!!!")
-    
+
     love.physics.setMeter(10)
-    
+
     game = Game()
     tank = Tank(game.world, 0, 0)
     game:addEntity(tank)
@@ -22,7 +21,7 @@ function love.load()
     tank2 = Tank(game.world, 100, 0)
     game:addEntity(tank2)
 
-    moveTarget = MoveTarget(game.world, 100, 100)
+    moveTarget = MoveTarget(game.world, -100, -100)
     tank.moveTarget = moveTarget
     game:addEntity(moveTarget)
 end
