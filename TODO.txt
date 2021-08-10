@@ -1,0 +1,15 @@
+TANKS!!!
+
+This is written to play around with physical entities as something other than a box of shapes thrown at each other.
+
+I want:
+* Terrain - a map grid of some kind.
+* A movable camera
+* tanks
+  - shooting each other with guns
+* AI
+  - entities that can move towards a point/object
+  - able to attack each other
+
+* multiplayer???
+  - events that get passed over network.

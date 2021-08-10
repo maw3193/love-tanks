@@ -1,0 +1,6 @@
+[submodule "thirdparty/love-misc-libs"]
+	path = thirdparty/love-misc-libs
+	url = https://github.com/bartbes/love-misc-libs
+[submodule "thirdparty/middleclass"]
+	path = thirdparty/middleclass
+	url = https://github.com/kikito/middleclass
