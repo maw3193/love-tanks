@@ -1,5 +1,6 @@
 local Entity = require "lib/entity"
 local Utils = require "lib/utils"
+local MoveTarget = require "lib/moveTarget"
 
 local Tank = Entity:subclass("Tank")
 
@@ -65,7 +66,7 @@ function Tank:thrust(dt, mult)
 end
 
 function Tank:onContact(other)
-    if self.moveTarget and self.moveTarget == other then
+    if self.moveTarget and self.moveTarget == other and other:isInstanceOf(MoveTarget) then
         self.moveTarget.body:destroy()
         self.moveTarget = nil
     end

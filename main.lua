@@ -26,20 +26,17 @@ function love.load()
 end
 
 function love.update(dt)
-    if love.keyboard.isDown("q") then
-        tank:turn(dt, -1)
-    elseif love.keyboard.isDown("e") then
-        tank:turn(dt, 1)
-    end
-    if love.keyboard.isDown("w") then
-        tank:thrust(dt, 1)
-    elseif love.keyboard.isDown("s") then
-        tank:thrust(dt, -1)
-    end
-
     game:update(dt)
 end
 
 function love.draw()
     game:draw()
+end
+
+function love.mousepressed(...)
+    game:mousePressed(...)
+end
+
+function love.mousereleased(...)
+    game:mouseReleased(...)
 end

@@ -8,7 +8,7 @@ I want:
 * tanks
   - shooting each other with guns
 * AI
-  - entities that can move towards a point/object
+  - entities that can move towards a point/object DONE
   - able to attack each other
 
 * multiplayer???
