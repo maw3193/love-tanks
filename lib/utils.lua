@@ -16,5 +16,13 @@ function Utils.bearingFromPositions(x1, y1, x2, y2)
     return math.atan2(dy, dx)
 end
 
+function Utils.tableIsEmpty(t) -- #t only works for numeric keys
+    for k,v in pairs(t) do
+        if k or v then
+            return false
+        end
+    end
+    return true
+end
 
 return Utils

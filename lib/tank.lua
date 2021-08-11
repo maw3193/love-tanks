@@ -67,8 +67,7 @@ end
 
 function Tank:onContact(other)
     if self.moveTarget and self.moveTarget == other and other:isInstanceOf(MoveTarget) then
-        self.moveTarget.body:destroy()
-        self.moveTarget = nil
+        self:setMoveTarget(nil)
     end
 end
 

@@ -86,7 +86,6 @@ function Game:findTankAtCoords(x, y)
         return false
     end)
     return foundTank
-
 end
 
 function Game:mouseReleased(x, y, button, isTouch, presses)
@@ -99,17 +98,13 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
         self.selected = self:findTankAtCoords(wx, wy) -- could be nil, that works for us too
     elseif button == 2 then
         if self.selected then
-            if self.selected.moveTarget and self.selected.moveTarget:isInstanceOf(MoveTarget) then
-                self.selected.moveTarget.body:destroy()
-            end
-            self.selected.moveTarget = self:findTankAtCoords(wx, wy)
+            self.selected:setMoveTarget(self:findTankAtCoords(wx, wy))
             if not self.selected.moveTarget then -- clicked empty space
                 local moveTarget = MoveTarget(self.world, wx, wy)
-                self.selected.moveTarget = moveTarget
+                self.selected:setMoveTarget(moveTarget)
             end
         end
     end
-    
 end
 
 return Game

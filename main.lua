@@ -7,7 +7,8 @@ local game
 local tank
 local tank2
 
-function love.load()
+function love.load(arg)
+    if arg[#arg] == "-debug" then require("mobdebug").start() end
     love.window.setMode(Config.width, Config.height)
     love.window.setTitle("Tanks!!!")
 
@@ -16,13 +17,14 @@ function love.load()
     game = Game()
     tank = Tank(game.world, 0, 0)
     game:addEntity(tank)
+    game.selected = tank
 
     tank2 = Tank(game.world, 100, 0)
     game:addEntity(tank2)
 
     local moveTarget = MoveTarget(game.world, -100, -100)
-    tank.moveTarget = moveTarget
     game:addEntity(moveTarget)
+    tank:setMoveTarget(moveTarget)
 end
 
 function love.update(dt)

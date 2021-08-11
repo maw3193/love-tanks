@@ -14,6 +14,7 @@ function Entity:initialize(world, x, y, params)
     self.body = love.physics.newBody(world, x, y, bodyType)
     self.body:setUserData(self)
     self.body:setFixedRotation(true)
+    self.targetters = {}
 end
 
 function Entity:update(dt)
@@ -77,5 +78,21 @@ end
 
 function Entity:onContact(other)
 end
+
+function Entity:setMoveTarget(other) -- an Entity, or nil
+    print(self, "setMoveTarget from ", self.moveTarget, " to ", other)
+    if self.moveTarget == other then -- same entity or both nil
+        return
+    end
+    if self.moveTarget then -- different entity being targetted, remove self from the old one
+        self.moveTarget.targetters[self] = nil
+    end
+    self.moveTarget = other
+    if self.moveTarget then -- i.e. it wasn't nil
+        self.moveTarget.targetters[self] = true
+    end
+    
+end
+
 
 return Entity
