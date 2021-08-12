@@ -1,5 +1,6 @@
 local Tank = require "lib/tank"
 local MoveTarget = require "lib/moveTarget"
+local MoveOrder = require "lib/moveOrder"
 local Config = require "lib/config"
 local Game = require "lib/game"
 
@@ -15,16 +16,16 @@ function love.load(arg)
     love.physics.setMeter(10)
 
     game = Game()
-    tank = Tank(game.world, 0, 0)
+    tank = Tank(game, 0, 0)
     game:addEntity(tank)
     game.selected = tank
 
-    tank2 = Tank(game.world, 100, 0)
+    tank2 = Tank(game, 100, 0)
     game:addEntity(tank2)
 
-    local moveTarget = MoveTarget(game.world, -100, -100)
+    local moveTarget = MoveTarget(game, -100, -100)
     game:addEntity(moveTarget)
-    tank:setMoveTarget(moveTarget)
+    tank:setOrder(MoveOrder{executor=tank, target=moveTarget})
 end
 
 function love.update(dt)

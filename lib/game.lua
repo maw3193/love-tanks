@@ -2,6 +2,7 @@ local Class = require "thirdparty/middleclass/middleclass"
 local Config = require "lib/config"
 local Tank = require "lib/tank"
 local MoveTarget = require "lib/moveTarget"
+local MoveOrder = require "lib/moveOrder"
 
 local Game = Class("Game")
 
@@ -98,11 +99,14 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
         self.selected = self:findTankAtCoords(wx, wy) -- could be nil, that works for us too
     elseif button == 2 then
         if self.selected then
-            self.selected:setMoveTarget(self:findTankAtCoords(wx, wy))
-            if not self.selected.moveTarget then -- clicked empty space
-                local moveTarget = MoveTarget(self.world, wx, wy)
-                self.selected:setMoveTarget(moveTarget)
+            local target = self:findTankAtCoords(wx, wy)
+            if not target then
+                target = MoveTarget(self, wx, wy)
             end
+            self.selected:setOrder(MoveOrder{
+                executor = self.selected,
+                target = target,
+            })
         end
     end
 end

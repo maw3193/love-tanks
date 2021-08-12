@@ -1,6 +1,6 @@
 local Entity = require "lib/entity"
 local Utils = require "lib/utils"
-local MoveTarget = require "lib/moveTarget"
+local MoveOrder = require "lib/moveOrder"
 
 local Tank = Entity:subclass("Tank")
 
@@ -8,30 +8,10 @@ local triangleShape = love.physics.newPolygonShape(Utils.polygonPoints(16, 3))
 
 Tank.turnSpeed = 1
 Tank.thrustPower = 500
-Tank.forwardAngleThreshold = math.pi / 2
 
-function Tank:initialize(world, x, y, params)
-    Entity.initialize(self, world, x, y, params)
+function Tank:initialize(game, x, y, params)
+    Entity.initialize(self, game, x, y, params)
     love.physics.newFixture(self.body, triangleShape)
-end
-
-function Tank:moveToMoveTarget(dt)
-    local targetBearing = self:calculateBearing(self.moveTarget)
-    if self.turnSpeed then
-        self:turnTowards(dt, targetBearing)
-    end
-    if self.thrustPower then
-        local angleDifference = targetBearing - self.body:getAngle()
-        if math.abs(angleDifference) <= self.forwardAngleThreshold then
-            self:thrust(dt, 1)
-        end
-    end
-end
-
-function Tank:update(dt)
-    if self.moveTarget then
-        self:moveToMoveTarget(dt)
-    end
 end
 
 function Tank:turnTowards(dt, bearing)
@@ -66,8 +46,10 @@ function Tank:thrust(dt, mult)
 end
 
 function Tank:onContact(other)
-    if self.moveTarget and self.moveTarget == other and other:isInstanceOf(MoveTarget) then
-        self:setMoveTarget(nil)
+    -- TODO: Better way of doing this
+    if self.orders[1] and self.orders[1]:isInstanceOf(MoveOrder) and self.orders[1].target == other then
+        self.orders[1]:destroy()
+        table.remove(self.orders, 1)
     end
 end
 
