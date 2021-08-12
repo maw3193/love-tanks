@@ -97,4 +97,22 @@ function Entity:setOrder(order)
     table.insert(self.orders, order)
 end
 
+function Entity:addOrder(order)
+    table.insert(self.orders, order)
+end
+
+function Entity:isTouching(other)
+    for _, contact in ipairs(self.body:getContacts()) do
+        if contact:isTouching() then
+            local fixa, fixb = contact:getFixtures()
+            for _, fixture in ipairs({fixa, fixb}) do
+                if fixture:getBody():getUserData() == other then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
 return Entity

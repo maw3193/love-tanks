@@ -16,4 +16,7 @@ end
 function Order:destroy()
 end
 
+function Order:onContact(other)
+end
+
 return Order

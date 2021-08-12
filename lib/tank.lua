@@ -46,10 +46,8 @@ function Tank:thrust(dt, mult)
 end
 
 function Tank:onContact(other)
-    -- TODO: Better way of doing this
-    if self.orders[1] and self.orders[1]:isInstanceOf(MoveOrder) and self.orders[1].target == other then
-        self.orders[1]:destroy()
-        table.remove(self.orders, 1)
+    if self.orders[1] then
+        self.orders[1]:onContact(other)
     end
 end
 

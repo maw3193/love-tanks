@@ -26,6 +26,7 @@ function love.load(arg)
     local moveTarget = MoveTarget(game, -100, -100)
     game:addEntity(moveTarget)
     tank:setOrder(MoveOrder{executor=tank, target=moveTarget})
+    tank:addOrder(MoveOrder{executor=tank, target=tank2})
 end
 
 function love.update(dt)

@@ -103,10 +103,15 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
             if not target then
                 target = MoveTarget(self, wx, wy)
             end
-            self.selected:setOrder(MoveOrder{
+            local order = MoveOrder{
                 executor = self.selected,
                 target = target,
-            })
+            }
+            if love.keyboard.isDown("lshift") then
+                self.selected:addOrder(order)
+            else
+                self.selected:setOrder(order)
+            end
         end
     end
 end

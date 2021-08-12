@@ -1,7 +1,6 @@
 TANKS!!!
 
 This is written to play around with physical entities as something other than a box of shapes thrown at each other.
-
 I want:
 * Terrain - a map grid of some kind.
 * A movable camera

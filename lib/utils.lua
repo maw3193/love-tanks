@@ -25,4 +25,13 @@ function Utils.tableIsEmpty(t) -- #t only works for numeric keys
     return true
 end
 
+function Utils.removeItemFromArray(array, item)
+    for i,v in ipairs(array) do
+        if v == item then
+            table.remove(array, i)
+            return
+        end
+    end
+end
+
 return Utils

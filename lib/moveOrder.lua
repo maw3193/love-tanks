@@ -1,4 +1,5 @@
 local Order = require "lib/order"
+local Utils = require "lib/utils"
 
 local MoveOrder = Order:subclass("MoveOrder")
 
@@ -34,7 +35,20 @@ function MoveOrder:moveToTarget(dt)
 end
 
 function MoveOrder:update(dt)
+    if self.executor:isTouching(self.target) then
+        -- what if I touched it before being given the order?
+        Utils.removeItemFromArray(self.executor.orders, self)
+        self:destroy()
+        return
+    end
     self:moveToTarget(dt)
+end
+
+function MoveOrder:onContact(other)
+    if self.target == other then
+        Utils.removeItemFromArray(self.executor.orders, self)
+        self:destroy()
+    end
 end
 
 return MoveOrder
