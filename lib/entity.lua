@@ -64,10 +64,22 @@ function Entity:drawName()
     love.graphics.print(text)
 end
 
+function Entity:drawOrders()
+    local prevX, prevY = self.body:getPosition()
+    for i, order in ipairs(self.orders) do
+        order:draw(prevX, prevY)
+        local nextX, nextY = order:getPosition()
+        if nextX then
+            prevX = nextX
+            prevY = nextY
+        end
+    end
+end
+
 function Entity:draw()
     local px, py = self.body:getPosition()
-    if self.orders[1] then -- only draws the first order in the queue
-        self.orders[1]:draw()
+    if not Utils.tableIsEmpty(self.orders) then
+        self:drawOrders()
     end
     love.graphics.push() -- now in entity-local coordinates
     love.graphics.translate(px, py)

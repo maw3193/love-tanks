@@ -15,10 +15,9 @@ function MoveOrder:destroy()
     self.target.targetters[self.executor] = nil
 end
 
-function MoveOrder:draw()
-    local px, py = self.executor.body:getPosition()
-    local tx, ty = self.target.body:getPosition()
-    love.graphics.line(px, py, tx, ty)
+function MoveOrder:draw(prevX, prevY) --there MUST be a previous position to draw an order from
+    local x, y = self.target.body:getPosition()
+    love.graphics.line(prevX, prevY, x, y)
 end
 
 function MoveOrder:moveToTarget(dt)
@@ -49,6 +48,10 @@ function MoveOrder:onContact(other)
         Utils.removeItemFromArray(self.executor.orders, self)
         self:destroy()
     end
+end
+
+function MoveOrder:getPosition()
+    return self.target.body:getPosition()
 end
 
 return MoveOrder

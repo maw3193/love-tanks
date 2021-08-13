@@ -7,7 +7,7 @@ function Order:initialize(params)
     self.executor = params.executor
 end
 
-function Order:draw()
+function Order:draw(prevX, prevY)
 end
 
 function Order:update(dt)
@@ -17,6 +17,9 @@ function Order:destroy()
 end
 
 function Order:onContact(other)
+end
+
+function Order:getPosition()
 end
 
 return Order
