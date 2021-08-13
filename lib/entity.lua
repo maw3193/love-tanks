@@ -4,11 +4,13 @@ local Utils = require "lib/utils"
 
 local Entity = Class("Entity")
 
-Entity.drawPoint = true
-Entity.drawName = true
+Entity.shouldDrawPoint = true
+Entity.shouldDrawName = false
+Entity.friction = 1
 
 function Entity:initialize(game, x, y, params)
     params = params or {}
+    self.game = game
     local bodyType = params.bodyType or "dynamic"
     self.body = love.physics.newBody(game.world, x, y, bodyType)
     self.body:setUserData(self)
@@ -83,11 +85,11 @@ function Entity:draw()
     end
     love.graphics.push() -- now in entity-local coordinates
     love.graphics.translate(px, py)
-    if self.drawName then
+    if self.shouldDrawName then
         self:drawName()
     end
     love.graphics.rotate(self.body:getAngle())
-    if self.drawPoint then
+    if self.shouldDrawPoint then
         love.graphics.points(0,0) -- fallback to avoid entities getting lost
     end
     self:drawAllShapes()

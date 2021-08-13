@@ -1,6 +1,7 @@
 local Entity = require "lib/entity"
 local Utils = require "lib/utils"
 local MoveOrder = require "lib/moveOrder"
+local Projectile = require "lib/projectile"
 
 local Tank = Entity:subclass("Tank")
 
@@ -8,10 +9,11 @@ local triangleShape = love.physics.newPolygonShape(Utils.polygonPoints(16, 3))
 
 Tank.turnSpeed = 1
 Tank.thrustPower = 500
+Tank.projectileImpulse = 50
 
 function Tank:initialize(game, x, y, params)
     Entity.initialize(self, game, x, y, params)
-    love.physics.newFixture(self.body, triangleShape)
+    self.hull = love.physics.newFixture(self.body, triangleShape)
 end
 
 function Tank:turnTowards(dt, bearing)
@@ -49,6 +51,16 @@ function Tank:onContact(other)
     if self.orders[1] then
         self.orders[1]:onContact(other)
     end
+end
+
+function Tank:fire()
+    -- create the projectile outside the tank
+    local r = self.hull:getShape():getRadius()
+    local dx, dy = self.body:getWorldVector(r + 1, 0)
+    local px, py = self.body:getPosition()
+    local projectile = Projectile(self.game, px + dx, py + dy)
+    projectile.body:setAngle(self.body:getAngle())
+    projectile.body:applyLinearImpulse(projectile.body:getWorldVector(self.projectileImpulse, 0))
 end
 
 return Tank

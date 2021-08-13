@@ -22,11 +22,6 @@ function love.load(arg)
 
     tank2 = Tank(game, 100, 0)
     game:addEntity(tank2)
-
-    local moveTarget = MoveTarget(game, -100, -100)
-    game:addEntity(moveTarget)
-    tank:setOrder(MoveOrder{executor=tank, target=moveTarget})
-    tank:addOrder(MoveOrder{executor=tank, target=tank2})
 end
 
 function love.update(dt)
@@ -43,4 +38,12 @@ end
 
 function love.mousereleased(...)
     game:mouseReleased(...)
+end
+
+function love.keypressed(...)
+    game:keypressed(...)
+end
+
+function love.keyreleased(...)
+    game:keyreleased(...)
 end

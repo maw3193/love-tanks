@@ -20,7 +20,7 @@ function Game:initialize()
 end
 
 function Game:addEntity(entity)
-    entity.body:setLinearDamping(self.worldFriction)
+    entity.body:setLinearDamping(self.worldFriction * entity.friction)
     -- world already stores the bodies, no use for storing entities yet
 end
 
@@ -76,19 +76,6 @@ function Game:mousePressed(x, y, button, isTouch, presses)
     
 end
 
-function Game:findTankAtCoords(x, y)
-    local foundTank
-    self.world:queryBoundingBox(x, y, x+1, y+1, function(fixture)
-        local entity = fixture:getBody():getUserData()
-        if not fixture:isSensor() and entity:isInstanceOf(Tank) then
-            foundTank = entity
-            return true
-        end
-        return false
-    end)
-    return foundTank
-end
-
 function Game:mouseReleased(x, y, button, isTouch, presses)
     love.graphics.push()
     love.graphics.applyTransform(self.viewportTransform)
@@ -114,6 +101,28 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
             end
         end
     end
+end
+
+function Game:keypressed(key, scancode, isrepeat)
+end
+
+function Game:keyreleased(key, scancode)
+    if key == "space" and self.selected then
+        self.selected:fire()
+    end
+end
+
+function Game:findTankAtCoords(x, y)
+    local foundTank
+    self.world:queryBoundingBox(x, y, x+1, y+1, function(fixture)
+        local entity = fixture:getBody():getUserData()
+        if not fixture:isSensor() and entity:isInstanceOf(Tank) then
+            foundTank = entity
+            return true
+        end
+        return false
+    end)
+    return foundTank
 end
 
 return Game
