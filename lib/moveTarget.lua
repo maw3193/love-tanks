@@ -12,8 +12,8 @@ function MoveTarget:initialize(game, x, y, params)
     params = params or {}
     params.bodyType = "kinematic"
     Entity.initialize(self, game, x, y, params)
-    local sensorFixture = love.physics.newFixture(self.body, moveTargetSensorShape)
-    sensorFixture:setSensor(true)
+    self.sensor = love.physics.newFixture(self.body, moveTargetSensorShape)
+    self.sensor:setSensor(true)
 end
 
 function MoveTarget:update(dt)

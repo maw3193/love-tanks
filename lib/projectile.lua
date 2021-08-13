@@ -1,9 +1,9 @@
 local Entity = require "lib/entity"
+local CollisionCategory = require "lib/collisionCategory"
 
 local Projectile = Entity:subclass("Projectile")
 
 Projectile.friction = 0
-Projectile.launchImpulse = 10
 Projectile.lifespan = 0.5
 
 local projectileShape = love.physics.newPolygonShape{
@@ -14,8 +14,10 @@ local projectileShape = love.physics.newPolygonShape{
 
 function Projectile:initialize(game, x, y, params)
     Entity.initialize(self, game, x, y, params)
-    self.body:isBullet(true)
+    self.body:setBullet(true)
     self.hull = love.physics.newFixture(self.body, projectileShape)
+    self.hull:setCategory(CollisionCategory.PROJECTILE)
+    self.hull:setMask(CollisionCategory.PROJECTILE)
     self.age = 0
 end
 

@@ -8,12 +8,21 @@ local Tank = Entity:subclass("Tank")
 local triangleShape = love.physics.newPolygonShape(Utils.polygonPoints(16, 3))
 
 Tank.turnSpeed = 1
-Tank.thrustPower = 500
-Tank.projectileImpulse = 50
+Tank.thrustPower = 2000
+Tank.projectileVelocity = 800
 
 function Tank:initialize(game, x, y, params)
     Entity.initialize(self, game, x, y, params)
     self.hull = love.physics.newFixture(self.body, triangleShape)
+end
+
+function Tank:draw()
+    Entity.draw(self)
+    love.graphics.push() -- now in entity-local coordinates
+    love.graphics.translate(self.body:getPosition())
+    local radius = self.projectileVelocity * Projectile.lifespan + 16
+    love.graphics.circle("line", 0, 0, radius)
+    love.graphics.pop()
 end
 
 function Tank:turnTowards(dt, bearing)
@@ -55,12 +64,14 @@ end
 
 function Tank:fire()
     -- create the projectile outside the tank
-    local r = self.hull:getShape():getRadius()
+    -- TODO: A proper solution to entity radius, since Shape:getRadius() can't be relied on
+    --local r = self.hull:getShape():getRadius()
+    local r = 16
     local dx, dy = self.body:getWorldVector(r + 1, 0)
     local px, py = self.body:getPosition()
     local projectile = Projectile(self.game, px + dx, py + dy)
     projectile.body:setAngle(self.body:getAngle())
-    projectile.body:applyLinearImpulse(projectile.body:getWorldVector(self.projectileImpulse, 0))
+    projectile.body:setLinearVelocity(projectile.body:getWorldVector(self.projectileVelocity, 0))
 end
 
 return Tank
