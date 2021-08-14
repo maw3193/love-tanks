@@ -3,7 +3,7 @@ local Utils = require "lib/utils"
 
 local MoveOrder = Order:subclass("MoveOrder")
 
-MoveOrder.forwardAngleThreshold = math.pi / 2
+MoveOrder.forwardAngleThreshold = math.pi / 4
 
 function MoveOrder:initialize(params)
     Order.initialize(self, params)
@@ -33,7 +33,11 @@ function MoveOrder:moveToTarget(dt)
     end
 end
 
-function MoveOrder:update(dt)
+function MoveOrder:update(dt, isFirstOrder)
+    if not isFirstOrder then
+        return
+    end
+
     if self.executor:isTouching(self.target) then
         -- what if I touched it before being given the order?
         Utils.removeItemFromArray(self.executor.orders, self)

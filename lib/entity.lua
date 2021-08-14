@@ -21,8 +21,8 @@ function Entity:initialize(game, x, y, params)
 end
 
 function Entity:update(dt)
-    if self.orders[1] then -- only the first order is processed
-        self.orders[1]:update(dt)
+    for i,order in ipairs(Utils.duplicateTable(self.orders)) do
+        order:update(dt, (i == 1))
     end
 end
 
@@ -111,8 +111,12 @@ function Entity:setOrder(order)
     table.insert(self.orders, order)
 end
 
-function Entity:addOrder(order)
+function Entity:appendOrder(order)
     table.insert(self.orders, order)
+end
+
+function Entity:prependOrder(order)
+    table.insert(self.orders, 1, order)
 end
 
 function Entity:isTouching(other)

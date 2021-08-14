@@ -34,4 +34,12 @@ function Utils.removeItemFromArray(array, item)
     end
 end
 
+function Utils.duplicateTable(oldTable)
+    local t = {}
+    for k,v in pairs(oldTable) do
+        t[k] = v
+    end
+    return t
+end
+
 return Utils

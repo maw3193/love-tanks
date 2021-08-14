@@ -1,6 +1,7 @@
 local Tank = require "lib/tank"
 local MoveTarget = require "lib/moveTarget"
 local MoveOrder = require "lib/moveOrder"
+local WanderOrder = require "lib/wanderOrder"
 local Config = require "lib/config"
 local Game = require "lib/game"
 
@@ -22,6 +23,7 @@ function love.load(arg)
 
     tank2 = Tank(game, 100, 0)
     game:addEntity(tank2)
+    tank2:setOrder(WanderOrder{executor=tank2})
 end
 
 function love.update(dt)

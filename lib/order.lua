@@ -10,7 +10,7 @@ end
 function Order:draw(prevX, prevY)
 end
 
-function Order:update(dt)
+function Order:update(dt, isFirstOrder)
 end
 
 function Order:destroy()

@@ -95,7 +95,7 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
                 target = target,
             }
             if love.keyboard.isDown("lshift") then
-                self.selected:addOrder(order)
+                self.selected:appendOrder(order)
             else
                 self.selected:setOrder(order)
             end

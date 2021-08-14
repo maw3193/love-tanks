@@ -8,7 +8,7 @@ local Tank = Entity:subclass("Tank")
 local triangleShape = love.physics.newPolygonShape(Utils.polygonPoints(16, 3))
 
 Tank.turnSpeed = 1
-Tank.thrustPower = 2000
+Tank.thrustPower = 1000
 Tank.projectileVelocity = 800
 
 function Tank:initialize(game, x, y, params)
