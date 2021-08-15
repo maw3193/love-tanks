@@ -1,6 +1,7 @@
 local Class = require "thirdparty/middleclass/middleclass"
 local Config = require "lib/config"
 local Tank = require "lib/tank"
+local Camera = require "lib/camera"
 local MoveTarget = require "lib/moveTarget"
 local MoveOrder = require "lib/moveOrder"
 
@@ -8,6 +9,7 @@ local Game = Class("Game")
 
 Game.worldFriction = 1
 Game.selected = nil -- an Entity
+Game.camera = nil -- a Camera Entity
 
 function Game:initialize()
     self.world = love.physics.newWorld()
@@ -16,7 +18,7 @@ function Game:initialize()
         function(...) return self:endContact(...) end,
         function(...) return self:preSolve(...) end,
         function(...) return self:postSolve(...) end)
-    self.viewportTransform = love.math.newTransform(Config.width / 2, Config.height / 2)
+    self.camera = Camera(self, 0, 0)
 end
 
 function Game:addEntity(entity)
@@ -36,6 +38,20 @@ function Game:update(dt)
         elseif love.keyboard.isDown("s") then
             self.selected:thrust(dt, -1)
         end
+        if love.keyboard.isDown("up") then
+            local posy = self.camera.body:getY()
+            self.camera.body:setY(posy - self.camera.scrollSpeedY * dt)
+        elseif love.keyboard.isDown("down") then
+            local posy = self.camera.body:getY()
+            self.camera.body:setY(posy + self.camera.scrollSpeedY * dt)
+        end
+        if love.keyboard.isDown("left") then
+            local posy = self.camera.body:getX()
+            self.camera.body:setX(posy - self.camera.scrollSpeedX * dt)
+        elseif love.keyboard.isDown("right") then
+            local posy = self.camera.body:getX()
+            self.camera.body:setX(posy + self.camera.scrollSpeedX * dt)
+        end
     end
 
     for _,body in ipairs(self.world:getBodies()) do
@@ -45,11 +61,24 @@ function Game:update(dt)
     self.world:update(dt)
 end
 
+function Game:viewportTransform()
+    love.graphics.translate(Config.width / 2, Config.height / 2)
+    local px, py = self.camera.body:getPosition()
+    love.graphics.translate(-px, -py)
+end
+
 function Game:draw()
+    local px, py = self.camera.body:getPosition()
+    love.graphics.print(px..","..py)
     love.graphics.push()
-    love.graphics.applyTransform(self.viewportTransform)
-    for _,body in ipairs(self.world:getBodies()) do
-        body:getUserData():draw()
+    self:viewportTransform()
+    for _, contact in ipairs(self.camera.body:getContacts()) do
+        local f1,f2 = contact:getFixtures()
+        for _, fixture in ipairs({f1,f2}) do
+            if fixture:getBody() ~= self.camera.body then
+                fixture:getBody():getUserData():draw()
+            end
+        end
     end
     love.graphics.pop()
 end
@@ -78,7 +107,7 @@ end
 
 function Game:mouseReleased(x, y, button, isTouch, presses)
     love.graphics.push()
-    love.graphics.applyTransform(self.viewportTransform)
+    self:viewportTransform()
     local wx, wy = love.graphics.inverseTransformPoint(x, y)
     love.graphics.pop()
     if button == 1 then
