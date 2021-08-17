@@ -67,11 +67,12 @@ function Game:viewportTransform()
     love.graphics.translate(Config.width / 2, Config.height / 2)
     local px, py = self.camera.body:getPosition()
     love.graphics.translate(-px, -py)
+    love.graphics.scale(self.camera.zoomLevel, self.camera.zoomLevel)
 end
 
 function Game:draw()
     local px, py = self.camera.body:getPosition()
-    love.graphics.print(px..","..py)
+    love.graphics.print(px..","..py..","..self.camera.zoomLevel)
     love.graphics.push()
     self:viewportTransform()
     for _, contact in ipairs(self.camera.body:getContacts()) do
@@ -140,6 +141,10 @@ end
 function Game:keyreleased(key, scancode)
     if key == "space" and self.selected then
         self.selected:fire()
+    elseif key == "=" then
+        self.camera:zoomIn()
+    elseif key == "-" then
+        self.camera:zoomOut()
     end
 end
 
