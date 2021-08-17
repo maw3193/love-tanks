@@ -1,5 +1,5 @@
 local Entity = require "lib/entity"
-local CollisionCategory = require "lib/collisionCategory"
+local CollisionCategory = require "lib/collision-category"
 
 local Projectile = Entity:subclass("Projectile")
 
