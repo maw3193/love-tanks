@@ -36,7 +36,7 @@ function Entity:drawAllShapes()
             local radius = shape:getRadius()
             love.graphics.circle("line", px, py, radius)
         end
-    end    
+    end
 end
 
 function Entity:calculateBearing(other)

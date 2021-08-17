@@ -57,7 +57,7 @@ function Game:update(dt)
     for _,body in ipairs(self.world:getBodies()) do
         body:getUserData():update(dt)
     end
-    
+
     self.world:update(dt)
 end
 
@@ -102,7 +102,7 @@ function Game:postSolve(fixture1, fixture2, contact, normal_impulse1,
 end
 
 function Game:mousePressed(x, y, button, isTouch, presses)
-    
+
 end
 
 function Game:mouseReleased(x, y, button, isTouch, presses)
@@ -115,7 +115,7 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
         self.selected = self:findTankAtCoords(wx, wy) -- could be nil, that works for us too
     elseif button == 2 then
         if self.selected then
-            local target = self:findTankAtCoords(wx, wy)
+            local target = self:findMoveTargetAtCoords(wx, wy)
             if not target then
                 target = Waypoint(self, wx, wy)
             end
@@ -139,6 +139,20 @@ function Game:keyreleased(key, scancode)
     if key == "space" and self.selected then
         self.selected:fire()
     end
+end
+
+function Game:findMoveTargetAtCoords(x, y)
+    local found
+    self.world:queryBoundingBox(x, y, x+1, y+1, function(fixture)
+        local entity = fixture:getBody():getUserData()
+        if (entity:isInstanceOf(Tank) and not fixture:isSensor()) or -- only the hull counts
+           (entity:isInstanceOf(Waypoint)) then
+            found = entity
+            return true
+        end
+        return false
+    end)
+    return found
 end
 
 function Game:findTankAtCoords(x, y)
