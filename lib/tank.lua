@@ -10,10 +10,12 @@ local triangleShape = love.physics.newPolygonShape(Utils.polygonPoints(16, 3))
 Tank.turnSpeed = 1
 Tank.thrustPower = 1000
 Tank.projectileVelocity = 800
+Tank.projectileFireInterval = 0.33
 
 function Tank:initialize(game, x, y, params)
     Entity.initialize(self, game, x, y, params)
     self.hull = love.physics.newFixture(self.body, triangleShape)
+    self.nextFireTime = self.game.runtime
 end
 
 function Tank:draw()
@@ -67,14 +69,17 @@ end
 
 function Tank:fire()
     -- create the projectile outside the tank
-    -- TODO: A proper solution to entity radius, since Shape:getRadius() can't be relied on
-    --local r = self.hull:getShape():getRadius()
-    local r = 16
-    local dx, dy = self.body:getWorldVector(r + 1, 0)
-    local px, py = self.body:getPosition()
-    local projectile = Projectile(self.game, px + dx, py + dy)
-    projectile.body:setAngle(self.body:getAngle())
-    projectile.body:setLinearVelocity(projectile.body:getWorldVector(self.projectileVelocity, 0))
+    if self.game.runtime >= self.nextFireTime then
+        -- TODO: A proper solution to entity radius, since Shape:getRadius() can't be relied on
+        --local r = self.hull:getShape():getRadius()
+        local r = 16
+        local dx, dy = self.body:getWorldVector(r + 1, 0)
+        local px, py = self.body:getPosition()
+        local projectile = Projectile(self.game, px + dx, py + dy)
+        projectile.body:setAngle(self.body:getAngle())
+        projectile.body:setLinearVelocity(projectile.body:getWorldVector(self.projectileVelocity, 0))
+        self.nextFireTime = self.game.runtime + self.projectileFireInterval
+    end
 end
 
 return Tank

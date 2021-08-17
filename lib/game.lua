@@ -19,6 +19,7 @@ function Game:initialize()
         function(...) return self:preSolve(...) end,
         function(...) return self:postSolve(...) end)
     self.camera = Camera(self, 0, 0)
+    self.runtime = 0
 end
 
 function Game:addEntity(entity)
@@ -27,6 +28,7 @@ function Game:addEntity(entity)
 end
 
 function Game:update(dt)
+    self.runtime = self.runtime + dt
     if self.selected then
         if love.keyboard.isDown("q") then
             self.selected:turn(dt, -1)

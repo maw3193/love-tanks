@@ -18,12 +18,11 @@ function Projectile:initialize(game, x, y, params)
     self.hull = love.physics.newFixture(self.body, projectileShape)
     self.hull:setCategory(CollisionCategory.PROJECTILE)
     self.hull:setMask(CollisionCategory.PROJECTILE)
-    self.age = 0
+    self.expireTime = game.runtime + self.lifespan
 end
 
 function Projectile:update(dt)
-    self.age = self.age + dt
-    if self.age >= self.lifespan then
+    if self.game.runtime >= self.expireTime then
         self.body:destroy()
     end
 end
