@@ -18,11 +18,16 @@ function love.load(arg)
 
     game = Game()
     tank = Tank(game, 0, 0)
-    game:addEntity(tank)
+    tank.body:setAngle(1 * math.pi)
     game.selected = tank
+    tank:appendOrder(MoveOrder{executor=tank,
+        target = MoveTarget(game, 50, -100)
+    })
+    tank:appendOrder(MoveOrder{executor=tank,
+        target = MoveTarget(game, 100, -100)
+    })
 
     tank2 = Tank(game, 100, 0)
-    game:addEntity(tank2)
     tank2:setOrder(WanderOrder{executor=tank2})
 end
 

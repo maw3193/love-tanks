@@ -31,7 +31,10 @@ function Tank:turnTowards(dt, bearing)
 
     if angleDifference > math.pi then
         angleDifference = angleDifference - 2 * math.pi
+    elseif angleDifference <= -math.pi then
+        angleDifference = angleDifference + 2 * math.pi
     end
+
     if math.abs(angleDifference) < dt * self.turnSpeed then
         self.body:setAngle(bearing)
     elseif angleDifference > 0 then
