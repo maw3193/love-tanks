@@ -1,5 +1,5 @@
 local Order = require "lib/order"
-local MoveTarget = require "lib/moveTarget"
+local Waypoint = require "lib/waypoint"
 local MoveOrder = require "lib/moveOrder"
 
 local WanderOrder = Order:subclass("WanderOrder")
@@ -17,7 +17,7 @@ function WanderOrder:update(dt, isFirstOrder)
         local px, py = self.executor.body:getPosition()
         px = px + radius * math.cos(angle)
         py = py + radius * math.sin(angle)
-        local moveTarget = MoveTarget(self.executor.game, px, py)
+        local moveTarget = Waypoint(self.executor.game, px, py)
         local moveOrder = MoveOrder{executor=self.executor, target=moveTarget}
         self.executor:prependOrder(moveOrder)
     end

@@ -2,8 +2,8 @@ local Class = require "thirdparty/middleclass/middleclass"
 local Config = require "lib/config"
 local Tank = require "lib/tank"
 local Camera = require "lib/camera"
-local MoveTarget = require "lib/moveTarget"
 local MoveOrder = require "lib/moveOrder"
+local Waypoint = require "lib/waypoint"
 
 local Game = Class("Game")
 
@@ -117,7 +117,7 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
         if self.selected then
             local target = self:findTankAtCoords(wx, wy)
             if not target then
-                target = MoveTarget(self, wx, wy)
+                target = Waypoint(self, wx, wy)
             end
             local order = MoveOrder{
                 executor = self.selected,

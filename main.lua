@@ -1,5 +1,5 @@
 local Tank = require "lib/tank"
-local MoveTarget = require "lib/moveTarget"
+local Waypoint = require "lib/waypoint"
 local MoveOrder = require "lib/moveOrder"
 local WanderOrder = require "lib/wanderOrder"
 local Config = require "lib/config"
@@ -21,10 +21,10 @@ function love.load(arg)
     tank.body:setAngle(1 * math.pi)
     game.selected = tank
     tank:appendOrder(MoveOrder{executor=tank,
-        target = MoveTarget(game, 50, -100)
+        target = Waypoint(game, 50, -100)
     })
     tank:appendOrder(MoveOrder{executor=tank,
-        target = MoveTarget(game, 100, -100)
+        target = Waypoint(game, 100, -100)
     })
 
     tank2 = Tank(game, 100, 0)

@@ -4,7 +4,7 @@ local Config = {
     turning = 1,
     thrust = 100,
     linearDamping = 1,
-    moveTargetRadius = 16,
+    waypointRadius = 16,
 }
 
 return Config

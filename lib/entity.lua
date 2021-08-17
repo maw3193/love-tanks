@@ -58,10 +58,6 @@ function Entity:drawName()
     }
     local angle = math.floor(math.deg(self.body:getAngle()))
     table.insert(textData, angle)
-    if self.moveTarget then
-        local targetAngle = math.floor(math.deg(self:calculateBearing(self.moveTarget)))
-        table.insert(textData, targetAngle)
-    end
     local text = table.concat(textData, ", ")
     love.graphics.print(text)
 end

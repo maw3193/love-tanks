@@ -2,24 +2,24 @@ local Entity = require "lib/entity"
 local Utils = require "lib/utils"
 local Config = require "lib/config"
 
-local MoveTarget = Entity:subclass("MoveTarget")
+local Waypoint = Entity:subclass("Waypoint")
 
-MoveTarget.sensorRadius = Config.moveTargetRadius
+Waypoint.sensorRadius = Config.waypointRadius
 
-local moveTargetSensorShape = love.physics.newCircleShape(MoveTarget.sensorRadius)
+local waypointSensorShape = love.physics.newCircleShape(Waypoint.sensorRadius)
 
-function MoveTarget:initialize(game, x, y, params)
+function Waypoint:initialize(game, x, y, params)
     params = params or {}
     params.bodyType = "kinematic"
     Entity.initialize(self, game, x, y, params)
-    self.sensor = love.physics.newFixture(self.body, moveTargetSensorShape)
+    self.sensor = love.physics.newFixture(self.body, waypointSensorShape)
     self.sensor:setSensor(true)
 end
 
-function MoveTarget:update(dt)
+function Waypoint:update(dt)
     if Utils.tableIsEmpty(self.targetters) then -- nothing is targetting me any more
         self.body:destroy()
     end
 end
 
-return MoveTarget
+return Waypoint
