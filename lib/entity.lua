@@ -129,4 +129,20 @@ function Entity:isTouching(other)
     return false
 end
 
+function Entity:addTargetter(targetter)
+    if self.targetters[targetter] then
+        self.targetters[targetter] = self.targetters[targetter] + 1
+    else
+        self.targetters[targetter] = 1
+    end
+end
+
+function Entity:removeTargetter(targetter)
+    assert(self.targetters[targetter])
+    self.targetters[targetter] = self.targetters[targetter] - 1
+    if self.targetters[targetter] < 1 then
+        self.targetters[targetter] = nil
+    end
+end
+
 return Entity

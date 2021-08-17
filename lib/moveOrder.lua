@@ -8,11 +8,11 @@ MoveOrder.forwardAngleThreshold = math.pi / 4
 function MoveOrder:initialize(params)
     Order.initialize(self, params)
     self.target = params.target
-    self.target.targetters[self.executor] = true
+    self.target:addTargetter(self.executor)
 end
 
 function MoveOrder:destroy()
-    self.target.targetters[self.executor] = nil
+    self.target:removeTargetter(self.executor)
 end
 
 function MoveOrder:draw(prevX, prevY) --there MUST be a previous position to draw an order from
