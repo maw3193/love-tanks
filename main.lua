@@ -1,6 +1,6 @@
 local Tank = require "lib/tank"
 local Waypoint = require "lib/waypoint"
-local MoveOrder = require "lib/moveOrder"
+local MoveOrder = require "lib/move-order"
 local WanderOrder = require "lib/wanderOrder"
 local Config = require "lib/config"
 local Game = require "lib/game"

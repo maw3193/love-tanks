@@ -2,7 +2,7 @@ local Class = require "thirdparty/middleclass/middleclass"
 local Config = require "lib/config"
 local Tank = require "lib/tank"
 local Camera = require "lib/camera"
-local MoveOrder = require "lib/moveOrder"
+local MoveOrder = require "lib/move-order"
 local Waypoint = require "lib/waypoint"
 
 local Game = Class("Game")

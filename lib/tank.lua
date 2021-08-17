@@ -1,6 +1,6 @@
 local Entity = require "lib/entity"
 local Utils = require "lib/utils"
-local MoveOrder = require "lib/moveOrder"
+local MoveOrder = require "lib/move-order"
 local Projectile = require "lib/projectile"
 
 local Tank = Entity:subclass("Tank")

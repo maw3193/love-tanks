@@ -1,6 +1,6 @@
 local Order = require "lib/order"
 local Waypoint = require "lib/waypoint"
-local MoveOrder = require "lib/moveOrder"
+local MoveOrder = require "lib/move-order"
 
 local WanderOrder = Order:subclass("WanderOrder")
 
