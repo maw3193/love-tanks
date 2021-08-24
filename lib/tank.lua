@@ -1,3 +1,6 @@
+local NameGen = require "namegen/namegen"
+local Slab = require "thirdparty/Slab"
+
 local Entity = require "lib/entity"
 local Utils = require "lib/utils"
 local MoveOrder = require "lib/move-order"
@@ -11,21 +14,15 @@ Tank.turnSpeed = 1
 Tank.thrustPower = 1000
 Tank.projectileVelocity = 800
 Tank.projectileFireInterval = 0.33
+Tank.shouldDrawName = true
 
 function Tank:initialize(game, x, y, params)
     Entity.initialize(self, game, x, y, params)
     self.hull = love.physics.newFixture(self.body, triangleShape)
     self.nextFireTime = self.game.runtime
+    self.name = NameGen.generate("human male")
 end
 
-function Tank:draw()
-    Entity.draw(self)
-    love.graphics.push() -- now in entity-local coordinates
-    love.graphics.translate(self.body:getPosition())
-    local radius = self.projectileVelocity * Projectile.lifespan + 16
-    love.graphics.circle("line", 0, 0, radius)
-    love.graphics.pop()
-end
 
 function Tank:turnTowards(dt, bearing)
     local currentAngle = self.body:getAngle()

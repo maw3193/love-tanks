@@ -1,3 +1,5 @@
+local Slab = require "thirdparty/Slab"
+
 local Tank = require "lib/tank"
 local Waypoint = require "lib/waypoint"
 local MoveOrder = require "lib/move-order"
@@ -13,6 +15,7 @@ function love.load(arg)
     if arg[#arg] == "-debug" then require("mobdebug").start() end
     love.window.setMode(Config.width, Config.height)
     love.window.setTitle("Tanks!!!")
+    math.randomseed(os.time())
 
     love.physics.setMeter(10)
 

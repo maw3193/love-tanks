@@ -20,6 +20,10 @@ function Entity:initialize(game, x, y, params)
     game:addEntity(self)
 end
 
+function Entity:__tostring()
+    return self.class.name..":"..(self.name or "")
+end
+
 function Entity:update(dt)
     for i,order in ipairs(Utils.duplicateTable(self.orders)) do
         order:update(dt, (i == 1))
@@ -47,42 +51,26 @@ function Entity:calculateBearing(other)
     return bearing
 end
 
-function Entity:drawName()
-    local px, py = self.body:getPosition()
-    local textData = {
-        self.class.name,
-        math.floor(px),
-        math.floor(py),
-        self.body:getAngle() / math.pi,
-        math.floor(math.deg(self.body:getAngle())),
-    }
-    local angle = math.floor(math.deg(self.body:getAngle()))
-    table.insert(textData, angle)
-    local text = table.concat(textData, ", ")
-    love.graphics.print(text)
-end
-
 function Entity:drawOrders()
-    local prevX, prevY = self.body:getPosition()
-    for i, order in ipairs(self.orders) do
-        order:draw(prevX, prevY)
-        local nextX, nextY = order:getPosition()
-        if nextX then
-            prevX = nextX
-            prevY = nextY
+    if not Utils.tableIsEmpty(self.orders) then
+        local prevX, prevY = self.body:getPosition()
+        for i, order in ipairs(self.orders) do
+            order:draw(prevX, prevY)
+            local nextX, nextY = order:getPosition()
+            if nextX then
+                prevX = nextX
+                prevY = nextY
+            end
         end
     end
 end
 
 function Entity:draw()
     local px, py = self.body:getPosition()
-    if not Utils.tableIsEmpty(self.orders) then
-        self:drawOrders()
-    end
     love.graphics.push() -- now in entity-local coordinates
     love.graphics.translate(px, py)
-    if self.shouldDrawName then
-        self:drawName()
+    if self.name then
+        love.graphics.print(self.name)
     end
     love.graphics.rotate(self.body:getAngle())
     if self.shouldDrawPoint then

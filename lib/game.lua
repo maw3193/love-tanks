@@ -1,9 +1,12 @@
+local Slab = require "thirdparty/Slab"
+
 local Class = require "thirdparty/middleclass/middleclass"
 local Config = require "lib/config"
 local Tank = require "lib/tank"
 local Camera = require "lib/camera"
 local MoveOrder = require "lib/move-order"
 local Waypoint = require "lib/waypoint"
+local Utils = require "lib/utils"
 
 local Game = Class("Game")
 
@@ -18,6 +21,7 @@ function Game:initialize()
         function(...) return self:endContact(...) end,
         function(...) return self:preSolve(...) end,
         function(...) return self:postSolve(...) end)
+    Slab.Initialize()
     self.camera = Camera(self, 0, 0)
     self.runtime = 0
 end
@@ -27,9 +31,37 @@ function Game:addEntity(entity)
     -- world already stores the bodies, no use for storing entities yet
 end
 
+function Game:menu()
+    if Slab.BeginMainMenuBar() then
+        if Slab.BeginMenu("Window") then
+            if Slab.MenuItemChecked("Camera Info", self.camera.showWindow) then
+               self.camera.showWindow = not self.camera.showWindow
+            end
+            Slab.EndMenu()
+        end
+        Slab.EndMainMenuBar()
+    end
+end
+
 function Game:update(dt)
+    Slab.Update(dt)
+    self:menu()
     self.runtime = self.runtime + dt
-    if self.selected then
+    if love.keyboard.isDown("up") then
+        local posy = self.camera.body:getY()
+        self.camera.body:setY(posy - self.camera.scrollSpeedY * dt)
+    elseif love.keyboard.isDown("down") then
+        local posy = self.camera.body:getY()
+        self.camera.body:setY(posy + self.camera.scrollSpeedY * dt)
+    end
+    if love.keyboard.isDown("left") then
+        local posy = self.camera.body:getX()
+        self.camera.body:setX(posy - self.camera.scrollSpeedX * dt)
+    elseif love.keyboard.isDown("right") then
+        local posy = self.camera.body:getX()
+        self.camera.body:setX(posy + self.camera.scrollSpeedX * dt)
+    end
+    if self.selected and Utils.tableIsEmpty(self.selected.orders) then
         if love.keyboard.isDown("q") then
             self.selected:turn(dt, -1)
         elseif love.keyboard.isDown("e") then
@@ -39,20 +71,6 @@ function Game:update(dt)
             self.selected:thrust(dt, 1)
         elseif love.keyboard.isDown("s") then
             self.selected:thrust(dt, -1)
-        end
-        if love.keyboard.isDown("up") then
-            local posy = self.camera.body:getY()
-            self.camera.body:setY(posy - self.camera.scrollSpeedY * dt)
-        elseif love.keyboard.isDown("down") then
-            local posy = self.camera.body:getY()
-            self.camera.body:setY(posy + self.camera.scrollSpeedY * dt)
-        end
-        if love.keyboard.isDown("left") then
-            local posy = self.camera.body:getX()
-            self.camera.body:setX(posy - self.camera.scrollSpeedX * dt)
-        elseif love.keyboard.isDown("right") then
-            local posy = self.camera.body:getX()
-            self.camera.body:setX(posy + self.camera.scrollSpeedX * dt)
         end
     end
 
@@ -71,19 +89,17 @@ function Game:viewportTransform()
 end
 
 function Game:draw()
-    local px, py = self.camera.body:getPosition()
-    love.graphics.print(px..","..py..","..self.camera.zoomLevel)
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.push()
     self:viewportTransform()
-    for _, contact in ipairs(self.camera.body:getContacts()) do
-        local f1,f2 = contact:getFixtures()
-        for _, fixture in ipairs({f1,f2}) do
-            if fixture:getBody() ~= self.camera.body then
-                fixture:getBody():getUserData():draw()
-            end
-        end
+    if self.selected then
+        self.selected:drawOrders()
+    end
+    for _, entity in ipairs(self.camera:getCollidingEntities()) do
+       entity:draw()
     end
     love.graphics.pop()
+    Slab.Draw()
 end
 
 function Game:beginContact(fixture1, fixture2, contact)
@@ -139,12 +155,14 @@ function Game:keypressed(key, scancode, isrepeat)
 end
 
 function Game:keyreleased(key, scancode)
-    if key == "space" and self.selected then
-        self.selected:fire()
-    elseif key == "=" then
+    if key == "=" then
         self.camera:zoomIn()
     elseif key == "-" then
         self.camera:zoomOut()
+    elseif self.selected and Utils.tableIsEmpty(self.selected.orders) then
+        if key == "space" then
+            self.selected:fire()
+        end
     end
 end
 
