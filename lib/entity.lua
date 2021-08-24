@@ -9,6 +9,7 @@ Entity.shouldDrawPoint = true
 Entity.shouldDrawName = false
 Entity.friction = 1
 Entity.bodyType = "dynamic"
+Entity.showWindow = false
 
 function Entity:initialize(game, properties)
     assert(properties.x, "Creating Entity with no X position")
@@ -54,7 +55,21 @@ function Entity:__tostring()
     return self.class.name..":"..(self.name or "")
 end
 
+function Entity:window()
+    if self.showWindow then
+        self.showWindow = Slab.BeginWindow("EntityInfo", {
+            Title = tostring(self),
+            IsOpen = self.showWindow,
+        })
+        Slab.Text(tostring(self))
+        Slab.Separator()
+        Slab.Properties(Utils.toSlabProperties(self:getProperties()))
+        Slab.EndWindow()
+    end
+end
+
 function Entity:update(dt)
+    self:window()
     for i,order in ipairs(Utils.duplicateTable(self.orders)) do
         order:update(dt, (i == 1))
     end

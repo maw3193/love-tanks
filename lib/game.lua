@@ -37,6 +37,14 @@ function Game:menu()
             if Slab.MenuItemChecked("Camera Info", self.camera.showWindow) then
                self.camera.showWindow = not self.camera.showWindow
             end
+            if self.selected then
+                if Slab.MenuItemChecked("Selected Entity Info", self.selected.showWindow) then
+                    self.selected.showWindow = not self.selected.showWindow
+                end
+            else
+                Slab.MenuItemChecked("Selected Entity info", false, {Enabled=false})
+            end
+
             Slab.EndMenu()
         end
         Slab.EndMainMenuBar()
@@ -125,6 +133,9 @@ function Game:mousePressed(x, y, button, isTouch, presses)
 end
 
 function Game:mouseReleased(x, y, button, isTouch, presses)
+    if not Slab.IsVoidHovered() then
+        return
+    end
     love.graphics.push()
     self:viewportTransform()
     local wx, wy = love.graphics.inverseTransformPoint(x, y)
