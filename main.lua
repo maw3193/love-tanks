@@ -1,5 +1,7 @@
 local Slab = require "thirdparty/Slab"
 
+love.physics.setMeter(10)
+
 local Tank = require "lib/tank"
 local Waypoint = require "lib/waypoint"
 local MoveOrder = require "lib/move-order"
@@ -17,7 +19,6 @@ function love.load(arg)
     love.window.setTitle("Tanks!!!")
     math.randomseed(os.time())
 
-    love.physics.setMeter(10)
 
     game = Game()
     tank = Tank(game, {x=0, y=0})
