@@ -147,7 +147,7 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
         if self.selected then
             local target = self:findMoveTargetAtCoords(wx, wy)
             if not target then
-                target = Waypoint(self, wx, wy)
+                target = Waypoint(self, {x=wx, y=wy})
             end
             local order = MoveOrder{
                 executor = self.selected,
