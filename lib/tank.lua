@@ -16,8 +16,8 @@ Tank.projectileVelocity = 800
 Tank.projectileFireInterval = 0.33
 Tank.shouldDrawName = true
 
-function Tank:initialize(game, x, y, params)
-    Entity.initialize(self, game, x, y, params)
+function Tank:initialize(game, properties)
+    Entity.initialize(self, game, properties)
     self.hull = love.physics.newFixture(self.body, triangleShape)
     self.nextFireTime = self.game.runtime
     self.name = NameGen.generate("human male")
@@ -72,9 +72,13 @@ function Tank:fire()
         local r = 16
         local dx, dy = self.body:getWorldVector(r + 1, 0)
         local px, py = self.body:getPosition()
-        local projectile = Projectile(self.game, px + dx, py + dy)
-        projectile.body:setAngle(self.body:getAngle())
-        projectile.body:setLinearVelocity(projectile.body:getWorldVector(self.projectileVelocity, 0))
+        -- assumes projectiles always fire forwards
+        local vx, vy = self.body:getWorldVector(self.projectileVelocity, 0)
+        Projectile(self.game, {
+            x = px + dx, y = py + dy,
+            angle = self.body:getAngle(),
+            vx = vx, vy = vy,
+        })
         self.nextFireTime = self.game.runtime + self.projectileFireInterval
     end
 end

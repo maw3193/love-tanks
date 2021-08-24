@@ -1,4 +1,5 @@
 local Class = require "thirdparty/middleclass/middleclass"
+local Slab=  require "thirdparty/Slab"
 local Config = require "lib/config"
 local Utils = require "lib/utils"
 
@@ -7,17 +8,46 @@ local Entity = Class("Entity")
 Entity.shouldDrawPoint = true
 Entity.shouldDrawName = false
 Entity.friction = 1
+Entity.bodyType = "dynamic"
 
-function Entity:initialize(game, x, y, params)
-    params = params or {}
+function Entity:initialize(game, properties)
+    assert(properties.x, "Creating Entity with no X position")
+    assert(properties.y, "Creating Entity with no Y position")
     self.game = game
-    local bodyType = params.bodyType or "dynamic"
-    self.body = love.physics.newBody(game.world, x, y, bodyType)
+    self.body = love.physics.newBody(game.world, properties.x, properties.y, self.bodyType)
     self.body:setUserData(self)
     self.body:setFixedRotation(true)
     self.targetters = {} -- should this be a weak table? if so, I need a better check of emptiness
     self.orders = {}
+    self:setProperties(properties)
     game:addEntity(self)
+end
+
+function Entity:setProperties(properties)
+    if properties.x and properties.y then
+        self.body:setPosition(properties.x, properties.y)
+    end
+    if properties.angle then
+        self.body:setAngle(properties.angle)
+    end
+    if properties.vx and properties.vy then
+        self.body:setLinearVelocity(properties.vx, properties.vy)
+    end
+    if properties.orders then
+        self:clearOrders()
+        for _, order in ipairs(properties.orders) do
+            self:appendOrder(order)
+        end
+    end
+end
+
+function Entity:getProperties()
+    local properties = {}
+    properties.x, properties.y = self.body:getPosition()
+    properties.angle = self.body:getAngle()
+    properties.vx, properties.vy = self.body:getLinearVelocity()
+    properties.orders = self.orders
+    return properties
 end
 
 function Entity:__tostring()

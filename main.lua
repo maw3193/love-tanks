@@ -20,17 +20,17 @@ function love.load(arg)
     love.physics.setMeter(10)
 
     game = Game()
-    tank = Tank(game, 0, 0)
-    tank.body:setAngle(1 * math.pi)
+    tank = Tank(game, {x=0, y=0})
+    tank.showWindow = true
     game.selected = tank
     tank:appendOrder(MoveOrder{executor=tank,
-        target = Waypoint(game, 50, -100)
+        target = Waypoint(game, {x=50, y=-100})
     })
     tank:appendOrder(MoveOrder{executor=tank,
-        target = Waypoint(game, 100, -100)
+        target = Waypoint(game, {x=100, y=-100})
     })
 
-    tank2 = Tank(game, 100, 0)
+    tank2 = Tank(game, {x=100, y=0})
     tank2:setOrder(WanderOrder{executor=tank2})
 end
 

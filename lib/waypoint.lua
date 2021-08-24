@@ -5,13 +5,13 @@ local Config = require "lib/config"
 local Waypoint = Entity:subclass("Waypoint")
 
 Waypoint.sensorRadius = Config.waypointRadius
+Waypoint.bodyType = "kinematic"
 
 local waypointSensorShape = love.physics.newCircleShape(Waypoint.sensorRadius)
 
-function Waypoint:initialize(game, x, y, params)
-    params = params or {}
-    params.bodyType = "kinematic"
-    Entity.initialize(self, game, x, y, params)
+
+function Waypoint:initialize(game, properties)
+    Entity.initialize(self, game, properties)
     self.sensor = love.physics.newFixture(self.body, waypointSensorShape)
     self.sensor:setSensor(true)
 end

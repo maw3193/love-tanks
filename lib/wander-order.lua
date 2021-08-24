@@ -17,7 +17,7 @@ function WanderOrder:update(dt, isFirstOrder)
         local px, py = self.executor.body:getPosition()
         px = px + radius * math.cos(angle)
         py = py + radius * math.sin(angle)
-        local moveTarget = Waypoint(self.executor.game, px, py)
+        local moveTarget = Waypoint(self.executor.game, {x=px, y=py})
         local moveOrder = MoveOrder{executor=self.executor, target=moveTarget}
         self.executor:prependOrder(moveOrder)
     end

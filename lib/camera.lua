@@ -10,8 +10,8 @@ Camera.scrollSpeedY = 50
 Camera.zoomMult = 1.1
 Camera.showWindow = false
 
-function Camera:initialize(game, x, y, params)
-    Entity.initialize(self, game, x, y, params)
+function Camera:initialize(game, properties)
+    Entity.initialize(self, game, properties)
     -- Camera will have a screen-shaped sensor
     -- this sensor must collide with everything, to decide what gets rendered.
     self:createSensor(Config.width, Config.height)

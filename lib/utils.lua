@@ -42,4 +42,23 @@ function Utils.duplicateTable(oldTable)
     return t
 end
 
+function Utils.toSlabProperties(properties)
+    local out = {}
+    for k,v in pairs(properties) do
+        table.insert(out, {
+            ID = k,
+            Value = v,
+        })
+    end
+    return out
+end
+
+function Utils.fromSlabProperties(properties)
+    local out = {}
+    for i,v in ipairs(properties) do
+        out[v.ID] = v.Value
+    end
+    return out
+end
+
 return Utils

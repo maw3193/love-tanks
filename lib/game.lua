@@ -22,7 +22,7 @@ function Game:initialize()
         function(...) return self:preSolve(...) end,
         function(...) return self:postSolve(...) end)
     Slab.Initialize()
-    self.camera = Camera(self, 0, 0)
+    self.camera = Camera(self, {x=0, y=0})
     self.runtime = 0
 end
 

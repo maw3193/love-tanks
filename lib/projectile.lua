@@ -12,8 +12,8 @@ local projectileShape = love.physics.newPolygonShape{
     -8, 3,
 }
 
-function Projectile:initialize(game, x, y, params)
-    Entity.initialize(self, game, x, y, params)
+function Projectile:initialize(game, properties)
+    Entity.initialize(self, game, properties)
     self.body:setBullet(true)
     self.hull = love.physics.newFixture(self.body, projectileShape)
     self.hull:setCategory(CollisionCategory.PROJECTILE)
