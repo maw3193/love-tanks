@@ -183,9 +183,9 @@ function Game:findMoveTargetAtCoords(x, y)
         if (entity:isInstanceOf(Tank) and not fixture:isSensor()) or -- only the hull counts
            (entity:isInstanceOf(Waypoint)) then
             found = entity
-            return true
+            return false
         end
-        return false
+        return true
     end)
     return found
 end

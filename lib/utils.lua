@@ -25,6 +25,14 @@ function Utils.tableIsEmpty(t) -- #t only works for numeric keys
     return true
 end
 
+function Utils.tableCountKeys(t)
+    local count = 0
+    for _,__ in pairs(t) do
+        count = count + 1
+    end
+    return count
+end
+
 function Utils.removeItemFromArray(array, item)
     for i,v in ipairs(array) do
         if v == item then

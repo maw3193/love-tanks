@@ -22,4 +22,12 @@ function Waypoint:update(dt)
     end
 end
 
+function Waypoint:draw()
+    Entity.draw(self)
+    love.graphics.push() -- now in entity-local coordinates
+    love.graphics.translate(self.body:getPosition())
+    love.graphics.print(Utils.tableCountKeys(self.targetters))
+    love.graphics.pop()
+end
+
 return Waypoint

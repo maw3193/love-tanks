@@ -26,14 +26,20 @@ function love.load(arg)
         x=0, y=0,
         orders = {
             MoveOrder{target = Waypoint(game, {x=50, y=-100})},
-            MoveOrder{target = Waypoint(game, {x=100, y=-100})},
+--            MoveOrder{target = Waypoint(game, {x=50, y=-120})},
+            WanderOrder(),
         },
     })
     game.selected = tank
     tank2 = Tank(game, {
         name = "Tank 2",
         x=100, y=0,
-        orders = {WanderOrder()},
+        orders = {
+            MoveOrder{target = Waypoint(game, {x=100, y=50})},
+            MoveOrder{target = Waypoint(game, {x=100, y=100})},
+            MoveOrder{target = Waypoint(game, {x=100, y=-100})},
+            WanderOrder(),
+        },
     })
 end
 
