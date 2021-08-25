@@ -150,7 +150,6 @@ function Game:mouseReleased(x, y, button, isTouch, presses)
                 target = Waypoint(self, {x=wx, y=wy})
             end
             local order = MoveOrder{
-                executor = self.selected,
                 target = target,
             }
             if love.keyboard.isDown("lshift") then

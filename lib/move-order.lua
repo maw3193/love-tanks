@@ -8,7 +8,11 @@ MoveOrder.forwardAngleThreshold = math.pi / 4
 function MoveOrder:initialize(params)
     Order.initialize(self, params)
     self.target = params.target
-    self.target:addTargetter(self.executor)
+end
+
+function MoveOrder:setExecutor(executor)
+    Order.setExecutor(self, executor)
+    self.target:addTargetter(executor)
 end
 
 function MoveOrder:destroy()

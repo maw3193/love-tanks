@@ -21,18 +21,20 @@ function love.load(arg)
 
 
     game = Game()
-    tank = Tank(game, {x=0, y=0})
-    tank.showWindow = true
+    tank = Tank(game, {
+        name = "Tank 1",
+        x=0, y=0,
+        orders = {
+            MoveOrder{target = Waypoint(game, {x=50, y=-100})},
+            MoveOrder{target = Waypoint(game, {x=100, y=-100})},
+        },
+    })
     game.selected = tank
-    tank:appendOrder(MoveOrder{executor=tank,
-        target = Waypoint(game, {x=50, y=-100})
+    tank2 = Tank(game, {
+        name = "Tank 2",
+        x=100, y=0,
+        orders = {WanderOrder()},
     })
-    tank:appendOrder(MoveOrder{executor=tank,
-        target = Waypoint(game, {x=100, y=-100})
-    })
-
-    tank2 = Tank(game, {x=100, y=0})
-    tank2:setOrder(WanderOrder{executor=tank2})
 end
 
 function love.update(dt)

@@ -138,14 +138,17 @@ end
 function Entity:setOrder(order)
     self:clearOrders()
     table.insert(self.orders, order)
+    order:setExecutor(self)
 end
 
 function Entity:appendOrder(order)
     table.insert(self.orders, order)
+    order:setExecutor(self)
 end
 
 function Entity:prependOrder(order)
     table.insert(self.orders, 1, order)
+    order:setExecutor(self)
 end
 
 function Entity:isTouching(other)

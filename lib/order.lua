@@ -2,9 +2,14 @@ local Class = require "thirdparty/middleclass/middleclass"
 
 local Order = Class("Order")
 
+Order.executor = nil --set when the order is added to an entity.
+
 function Order:initialize(params)
     self.__mode = "v" -- order doesn't force entities to persist
-    self.executor = params.executor
+end
+
+function Order:setExecutor(executor)
+    self.executor = executor
 end
 
 function Order:draw(prevX, prevY)

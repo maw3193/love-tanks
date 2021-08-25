@@ -20,9 +20,32 @@ function Tank:initialize(game, properties)
     Entity.initialize(self, game, properties)
     self.hull = love.physics.newFixture(self.body, triangleShape)
     self.nextFireTime = self.game.runtime
-    self.name = NameGen.generate("human male")
+    if not self.name then
+        self.name = NameGen.generate("human male")
+    end
 end
 
+function Tank:setProperties(properties)
+    Entity.setProperties(self, properties)
+    if properties.name then
+        self.name = properties.name
+    end
+end
+
+function Tank:getProperties()
+    local properties = Entity.getProperties(self)
+    properties.name = self.name
+    return properties
+end
+
+function Tank:draw()
+    Entity.draw(self)
+    love.graphics.push() -- now in entity-local coordinates
+    love.graphics.translate(self.body:getPosition())
+    love.graphics.rotate(self.body:getAngle())
+    love.graphics.line(0, 0, 16, 0)
+    love.graphics.pop()
+end
 
 function Tank:turnTowards(dt, bearing)
     local currentAngle = self.body:getAngle()
