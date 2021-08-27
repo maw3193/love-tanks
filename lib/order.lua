@@ -1,3 +1,4 @@
+local Slab = require "thirdparty/Slab"
 local Class = require "thirdparty/middleclass/middleclass"
 
 local Order = Class("Order")
@@ -10,6 +11,10 @@ end
 
 function Order:setExecutor(executor)
     self.executor = executor
+end
+
+function Order:uiControls()
+    Slab.Text(self.class.name)
 end
 
 function Order:draw(prevX, prevY)

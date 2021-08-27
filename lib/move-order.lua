@@ -1,3 +1,5 @@
+local Slab = require "thirdparty/Slab"
+
 local Order = require "lib/order"
 local Utils = require "lib/utils"
 
@@ -33,6 +35,17 @@ function MoveOrder:moveToTarget(dt)
         local angleDifference = targetBearing - self.executor.body:getAngle()
         if math.abs(angleDifference) <= self.forwardAngleThreshold then
             self.executor:thrust(dt, 1)
+        end
+    end
+end
+
+function MoveOrder:uiControls()
+    Slab.Text(self.class.name)
+    Slab.SameLine()
+    if Slab.Input("MoveOrderTargetName", {Text = tostring(self.target)}) then
+        local match = self.executor.game:searchEntityByName(Slab.GetInputText())
+        if match then
+            self.target = match
         end
     end
 end

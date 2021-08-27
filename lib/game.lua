@@ -1,6 +1,6 @@
 local Slab = require "thirdparty/Slab"
-
 local Class = require "thirdparty/middleclass/middleclass"
+
 local Config = require "lib/config"
 local Tank = require "lib/tank"
 local Camera = require "lib/camera"
@@ -201,6 +201,18 @@ function Game:findTankAtCoords(x, y)
         return false
     end)
     return foundTank
+end
+
+function Game:searchEntityByName(name)
+    local found = nil
+    for _,body in ipairs(self.world:getBodies()) do
+        local entity = body:getUserData()
+        if tostring(entity) == name then
+            found = entity
+            break
+        end
+    end
+    return found
 end
 
 return Game

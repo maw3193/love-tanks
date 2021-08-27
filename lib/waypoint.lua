@@ -9,6 +9,10 @@ Waypoint.bodyType = "kinematic"
 
 local waypointSensorShape = love.physics.newCircleShape(Waypoint.sensorRadius)
 
+function Waypoint:__tostring()
+    local px, py = self.body:getPosition()
+    return self.class.name..":"..px..","..py
+end
 
 function Waypoint:initialize(game, properties)
     Entity.initialize(self, game, properties)

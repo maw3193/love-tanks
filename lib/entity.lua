@@ -55,15 +55,62 @@ function Entity:__tostring()
     return self.class.name..":"..(self.name or "")
 end
 
+function Entity:uiControls()
+    --Slab.Properties(Utils.toSlabProperties(self:getProperties()))
+    if Slab.Input("EntityNameInput", {Text = self.name}) then
+        self.name = Slab.GetInputText()
+    end
+
+    local posx, posy = self.body:getPosition()
+    Slab.Text("X:")
+    Slab.SameLine()
+    if Slab.Input("EntityPosXInput", {Text = posx, NumbersOnly = true}) then
+        self.body:setPosition(tonumber(Slab.GetInputText()), posy)
+    end
+    Slab.SameLine()
+    Slab.Text("Y:")
+    Slab.SameLine()
+    if Slab.Input("EntityPosYInput", {Text = posy, NumbersOnly = true}) then
+        self.body:setPosition(posx, tonumber(Slab.GetInputText()))
+    end
+
+    Slab.Text("Angle:")
+    Slab.SameLine()
+    if Slab.Input("EntityAngleInput", {
+        Text = self.body:getAngle(),
+        NumbersOnly = true, UseSlider = true, Step = 0.1,
+        MinNumber = 0, MaxNumber = math.pi * 2,
+    }) then
+        self.body:setAngle(tonumber(Slab.GetInputText()))
+    end
+
+    local vx, vy = self.body:getLinearVelocity()
+    Slab.Text("VX:")
+    Slab.SameLine()
+    if Slab.Input("EntityVelocityXInput", {Text = vx, NumbersOnly = true}) then
+        self.body:setLinearVelocity(tonumber(Slab.GetInputText()), vy)
+    end
+    Slab.SameLine()
+    Slab.Text("VY:")
+    Slab.SameLine()
+    if Slab.Input("EntityVelocityYInput", {Text = vy, NumbersOnly = true}) then
+        self.body:setLinearVelocity(vx, tonumber(Slab.GetInputText()))
+    end
+
+    Slab.Text("Orders:")
+    Slab.Indent()
+    for i, order in ipairs(self.orders) do
+        order:uiControls()
+    end
+end
+
 function Entity:window()
     if self.showWindow then
         self.showWindow = Slab.BeginWindow("EntityInfo", {
             Title = tostring(self),
             IsOpen = self.showWindow,
         })
-        Slab.Text(tostring(self))
-        Slab.Separator()
-        Slab.Properties(Utils.toSlabProperties(self:getProperties()))
+        self:uiControls()
         Slab.EndWindow()
     end
 end
