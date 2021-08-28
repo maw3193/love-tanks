@@ -57,6 +57,10 @@ end
 
 function Entity:uiControls()
     --Slab.Properties(Utils.toSlabProperties(self:getProperties()))
+    Slab.Text("ID:")
+    Slab.SameLine()
+    Slab.Input("EntityID", {Text = tostring(self)})
+
     if Slab.Input("EntityNameInput", {Text = self.name}) then
         self.name = Slab.GetInputText()
     end
@@ -100,13 +104,25 @@ function Entity:uiControls()
     Slab.Text("Orders:")
     Slab.Indent()
     for i, order in ipairs(self.orders) do
+        if Slab.Button("X", {W=16, H=16}) then
+            self:removeOrder(i)
+        end
+        Slab.SameLine()
+        if Slab.Button("U", {W=16, H=16, Disabled=(i == 1)}) then
+            self:shiftUpOrder(i)
+        end
+        Slab.SameLine()
+        if Slab.Button("D", {W=16, H=16, Disabled=(i == #self.orders)}) then
+            self:shiftDownOrder(i)
+        end
+        Slab.SameLine()
         order:uiControls()
     end
 end
 
 function Entity:window()
     if self.showWindow then
-        self.showWindow = Slab.BeginWindow("EntityInfo", {
+        self.showWindow = Slab.BeginWindow("EntityInfo"..tostring(self), {
             Title = tostring(self),
             IsOpen = self.showWindow,
         })
@@ -196,6 +212,26 @@ end
 function Entity:prependOrder(order)
     table.insert(self.orders, 1, order)
     order:setExecutor(self)
+end
+
+function Entity:removeOrder(index)
+    local order = self.orders[index]
+    order:destroy()
+    table.remove(self.orders, index)
+end
+
+function Entity:shiftUpOrder(index)
+    assert(index ~= 1, "Order 1 is already at the top")
+    local swapped = self.orders[index - 1]
+    self.orders[index - 1] = self.orders[index]
+    self.orders[index] = swapped
+end
+
+function Entity:shiftDownOrder(index)
+    assert(index ~= #self.orders, "Order "..index.." is already at the bottom")
+    local swapped = self.orders[index + 1]
+    self.orders[index + 1] = self.orders[index]
+    self.orders[index] = swapped
 end
 
 function Entity:isTouching(other)
