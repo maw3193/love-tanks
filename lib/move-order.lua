@@ -45,7 +45,9 @@ function MoveOrder:uiControls()
     if Slab.Input("MoveOrderTargetName", {Text = tostring(self.target)}) then
         local match = self.executor.game:searchEntityByName(Slab.GetInputText())
         if match then
+            self.target:removeTargetter(self.executor)
             self.target = match
+            self.target:addTargetter(self.executor)
         end
     end
 end
