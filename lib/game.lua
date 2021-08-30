@@ -103,7 +103,7 @@ function Game:draw()
     if self.selected then
         self.selected:drawOrders()
     end
-    for _, entity in ipairs(self.camera:getCollidingEntities()) do
+    for entity in self.camera:collidingEntities() do
        entity:draw()
     end
     love.graphics.pop()

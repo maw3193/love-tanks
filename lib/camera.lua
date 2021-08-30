@@ -28,17 +28,27 @@ function Camera:createSensor(width, height)
     self.cameraSensor:setSensor(true)
 end
 
-function Camera:getCollidingEntities()
-    local entities = {}
-    for _, contact in ipairs(self.body:getContacts()) do
-        local f1,f2 = contact:getFixtures()
+function Camera:collidingEntities()
+    local uniqueEntities = {}
+    local contacts = self.body:getContacts()
+    local i = 0
+    return function()
+        i = i + 1
+        if not contacts[i] then
+            return nil
+        end
+        local f1,f2 = contacts[i]:getFixtures()
+        local entity
         if f1:getBody() ~= self.body then -- XXX: Could cause redundant drawing if we're not careful
-            table.insert(entities, f1:getBody():getUserData())
+            entity = f1:getBody():getUserData()
         else
-            table.insert(entities, f2:getBody():getUserData())
+            entity = f2:getBody():getUserData()
+        end
+        if not uniqueEntities[entity] then
+            uniqueEntities[entity] = true
+            return entity
         end
     end
-    return entities
 end
 
 function Camera:window()
@@ -51,7 +61,7 @@ function Camera:window()
     Slab.Text(string.format("Selected: %s", tostring(self.game.selected)))
     Slab.Text("Visible entities:")
     Slab.Indent()
-    for _,entity in ipairs(self:getCollidingEntities()) do
+    for entity in self:collidingEntities() do
         Slab.Text(tostring(entity))
     end
     Slab.EndWindow()
