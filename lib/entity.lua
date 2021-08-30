@@ -10,6 +10,7 @@ Entity.shouldDrawName = false
 Entity.friction = 1
 Entity.bodyType = "dynamic"
 Entity.showWindow = false
+Entity.radius = 8
 
 function Entity:initialize(game, properties)
     assert(properties.x, "Creating Entity with no X position")

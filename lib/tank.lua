@@ -8,10 +8,10 @@ local Projectile = require "lib/projectile"
 
 local Tank = Entity:subclass("Tank")
 
-local triangleShape = love.physics.newPolygonShape(Utils.polygonPoints(16, 3))
+local triangleShape = love.physics.newPolygonShape(Utils.polygonPoints(Tank.radius, 3))
 
-Tank.turnSpeed = 1
-Tank.thrustPower = 4000
+Tank.turnSpeed = 1.25
+Tank.thrustPower = 2000
 Tank.projectileVelocity = 800
 Tank.projectileFireInterval = 0.33
 Tank.shouldDrawName = true
@@ -43,7 +43,7 @@ function Tank:draw()
     love.graphics.push() -- now in entity-local coordinates
     love.graphics.translate(self.body:getPosition())
     love.graphics.rotate(self.body:getAngle())
-    love.graphics.line(0, 0, 16, 0)
+    love.graphics.line(0, 0, self.radius, 0)
     love.graphics.pop()
 end
 
@@ -90,10 +90,7 @@ end
 function Tank:fire()
     -- create the projectile outside the tank
     if self.game.runtime >= self.nextFireTime then
-        -- TODO: A proper solution to entity radius, since Shape:getRadius() can't be relied on
-        --local r = self.hull:getShape():getRadius()
-        local r = 16
-        local dx, dy = self.body:getWorldVector(r + 1, 0)
+        local dx, dy = self.body:getWorldVector(self.radius + 1, 0)
         local px, py = self.body:getPosition()
         -- assumes projectiles always fire forwards
         local vx, vy = self.body:getWorldVector(self.projectileVelocity, 0)

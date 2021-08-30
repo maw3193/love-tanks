@@ -4,10 +4,9 @@ local Config = require "lib/config"
 
 local Waypoint = Entity:subclass("Waypoint")
 
-Waypoint.sensorRadius = Config.waypointRadius
 Waypoint.bodyType = "kinematic"
 
-local waypointSensorShape = love.physics.newCircleShape(Waypoint.sensorRadius)
+local waypointSensorShape = love.physics.newCircleShape(Waypoint.radius)
 
 function Waypoint:__tostring()
     local px, py = self.body:getPosition()
