@@ -101,6 +101,8 @@ function Game:draw()
     love.graphics.push()
     self:viewportTransform()
     if self.selected then
+        local sx, sy = self.selected.body:getPosition()
+        love.graphics.circle("line", sx, sy, self.selected.radius)
         self.selected:drawOrders()
     end
     for entity in self.camera:collidingEntities() do
