@@ -215,4 +215,24 @@ function Game:searchEntityByName(name)
     return found
 end
 
+function Game:entities(allowedEntityTypes)
+    local i = 0
+    local bodies = self.world:getBodies()
+    return function()
+        i = i + 1
+        if bodies[i] then
+            local entity = bodies[i]:getUserData()
+            if allowedEntityTypes and #allowedEntityTypes then
+                for _, eType in ipairs(allowedEntityTypes) do
+                    if entity:isInstanceOf(eType) then
+                        return entity
+                    end
+                end
+            else
+                return entity
+            end
+        end
+    end
+end
+
 return Game

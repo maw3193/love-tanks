@@ -42,13 +42,17 @@ end
 function MoveOrder:uiControls()
     Slab.Text(self.class.name)
     Slab.SameLine()
-    if Slab.Input("MoveOrderTargetName", {Text = tostring(self.target)}) then
-        local match = self.executor.game:searchEntityByName(Slab.GetInputText())
-        if match then
-            self.target:removeTargetter(self.executor)
-            self.target = match
-            self.target:addTargetter(self.executor)
+    if Slab.BeginComboBox("MoveOrderTargetName", {Selected = self.target}) then
+        for entity in self.executor.game:entities({require "lib/tank", require "lib/waypoint"}) do
+            if entity ~= self.executor then
+                if Slab.TextSelectable(tostring(entity)) then
+                    self.target:removeTargetter(self.executor)
+                    self.target = entity
+                    self.target:addTargetter(self.executor)
+                end
+            end
         end
+        Slab.EndComboBox()
     end
 end
 
