@@ -1,18 +1,25 @@
 TANKS!!!
 
 This is written to play around with physical entities as something other than a box of shapes thrown at each other.
-I want:
+
+Bugs
+====
+
+* Really untidy click behaviour!
+
+Features
+========
 * UI
   - one window for selected entity
   - key binding menu
   - Creating a new order menu
   - time controls
-* Terrain - a map grid of some kind.
+* Terrain
+  - a map grid of some kind.
 * tanks
   - shooting each other with guns
 * AI
   - entities that can move towards a point/object DONE
   - able to attack each other
-
 * multiplayer???
   - events that get passed over network.

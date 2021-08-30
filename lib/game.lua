@@ -82,6 +82,36 @@ function Game:update(dt)
         end
     end
 
+    -- TODO: TIDY THIS FFS
+    if Slab.IsVoidClicked(1) then
+        local x,y = love.mouse.getPosition()
+        love.graphics.push()
+        self:viewportTransform()
+        local wx, wy = love.graphics.inverseTransformPoint(x, y)
+        love.graphics.pop()
+        self.selected = self:findTankAtCoords(wx, wy)
+    elseif Slab.IsVoidClicked(2) then
+        if self.selected then
+            local x,y = love.mouse.getPosition()
+            love.graphics.push()
+            self:viewportTransform()
+            local wx, wy = love.graphics.inverseTransformPoint(x, y)
+            love.graphics.pop()
+            local target = self:findMoveTargetAtCoords(wx, wy)
+            if not target then
+                target = Waypoint(self, {x=wx, y=wy})
+            end
+            local order = MoveOrder{
+                target = target,
+            }
+            if love.keyboard.isDown("lshift") then
+                self.selected:appendOrder(order)
+            else
+                self.selected:setOrder(order)
+            end
+        end
+    end
+
     for entity in self:entities() do
         entity:update(dt)
     end
@@ -135,32 +165,7 @@ function Game:mousePressed(x, y, button, isTouch, presses)
 end
 
 function Game:mouseReleased(x, y, button, isTouch, presses)
-    if not Slab.IsVoidHovered() then
-        return
-    end
-    love.graphics.push()
-    self:viewportTransform()
-    local wx, wy = love.graphics.inverseTransformPoint(x, y)
-    love.graphics.pop()
-    if button == 1 then
-        -- left-click on a tank to select it
-        self.selected = self:findTankAtCoords(wx, wy) -- could be nil, that works for us too
-    elseif button == 2 then
-        if self.selected then
-            local target = self:findMoveTargetAtCoords(wx, wy)
-            if not target then
-                target = Waypoint(self, {x=wx, y=wy})
-            end
-            local order = MoveOrder{
-                target = target,
-            }
-            if love.keyboard.isDown("lshift") then
-                self.selected:appendOrder(order)
-            else
-                self.selected:setOrder(order)
-            end
-        end
-    end
+    -- NOTE: clicking into the game area doesn't use this because it's hard to catch whether it touched a Slab window instead
 end
 
 function Game:keypressed(key, scancode, isrepeat)

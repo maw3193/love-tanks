@@ -12,6 +12,10 @@ function MoveOrder:initialize(params)
     self.target = params.target
 end
 
+function MoveOrder:__tostring()
+    return self.class.name..":"..tostring(self.target)
+end
+
 function MoveOrder:setExecutor(executor)
     Order.setExecutor(self, executor)
     self.target:addTargetter(executor)
@@ -42,7 +46,7 @@ end
 function MoveOrder:uiControls()
     Slab.Text(self.class.name)
     Slab.SameLine()
-    if Slab.BeginComboBox("MoveOrderTargetName", {Selected = self.target}) then
+    if Slab.BeginComboBox("MoveOrderTargetName:"..tostring(self), {Selected = self.target}) then
         for entity in self.executor.game:entities({require "lib/tank", require "lib/waypoint"}) do
             if entity ~= self.executor then
                 if Slab.TextSelectable(tostring(entity)) then
@@ -52,6 +56,7 @@ function MoveOrder:uiControls()
                 end
             end
         end
+
         Slab.EndComboBox()
     end
 end
