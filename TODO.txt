@@ -2,8 +2,12 @@ TANKS!!!
 
 This is written to play around with physical entities as something other than a box of shapes thrown at each other.
 I want:
+* UI
+  - one window for selected entity
+  - key binding menu
+  - Creating a new order menu
+  - time controls
 * Terrain - a map grid of some kind.
-* A movable camera
 * tanks
   - shooting each other with guns
 * AI
