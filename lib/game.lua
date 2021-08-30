@@ -82,8 +82,8 @@ function Game:update(dt)
         end
     end
 
-    for _,body in ipairs(self.world:getBodies()) do
-        body:getUserData():update(dt)
+    for entity in self:entities() do
+        entity:update(dt)
     end
 
     self.world:update(dt)
@@ -203,10 +203,9 @@ function Game:findTankAtCoords(x, y)
     return foundTank
 end
 
-function Game:searchEntityByName(name)
+function Game:searchEntityByName(name, allowedEntityTypes)
     local found = nil
-    for _,body in ipairs(self.world:getBodies()) do
-        local entity = body:getUserData()
+    for entity in self:entities(allowedEntityTypes) do
         if tostring(entity) == name then
             found = entity
             break
