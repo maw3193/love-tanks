@@ -139,6 +139,11 @@ function Entity:update(dt)
     end
 end
 
+function Entity:move(dx, dy)
+    local posx, posy = self.body:getPosition()
+    self.body:setPosition(posx + dx, posy + dy)
+end
+
 function Entity:drawAllShapes()
     for _,fixture in ipairs(self.body:getFixtures()) do
         local shape = fixture:getShape()

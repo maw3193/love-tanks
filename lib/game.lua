@@ -24,6 +24,21 @@ function Game:initialize()
     Slab.Initialize()
     self.camera = Camera(self, {x=0, y=0})
     self.runtime = 0
+    self.inputMap = {
+        {key = "q", name = "Selected Turn Left", action = self.selectedTurnLeft},
+        {key = "e", name = "Selected Turn Right", action = self.selectedTurnRight},
+        {key = "w", name = "Selected Move Forward", action = self.selectedMoveForward},
+        {key = "s", name = "Selected Move Backward", action = self.selectedMoveBackward},
+        {key = "space", name = "Selected Fire", action = self.selectedFire},
+        {key = "up", name = "Camera Move Up", action = self.cameraMoveUp},
+        {key = "down", name = "Camera Move Down", action = self.cameraMoveDown},
+        {key = "left", name = "Camera Move Left", action = self.cameraMoveLeft},
+        {key = "right", name = "Camera Move Right", action = self.cameraMoveRight},
+        {key = "=", name = "Camera Zoom In", action = self.cameraZoomIn},
+        {key = "-", name = "Camera Zoom Out", action = self.cameraZoomOut},
+        {key = 1, name = "Select At Cursor", action = self.selectAtCursor},
+        {key = 2, name = "Interact At Cursor", action = self.interactAtCursor},
+    }
 end
 
 function Game:addEntity(entity)
@@ -51,66 +66,28 @@ function Game:menu()
     end
 end
 
+function Game:processInput(dt)
+    for _, item in ipairs(self.inputMap) do
+        if type(item.key) == "string" then --a key code
+            if Slab.IsKeyDown(item.key) then
+                item.action(self, dt)
+            end
+        elseif type(item.key) == "number" then --a mouse button
+            if Slab.IsVoidClicked(item.key) then
+                item.action(self, dt)
+            end
+        else
+            assert(false, "key '"..tostring(item.key).."' is an unexpected type: "..type(item.key))
+        end
+    end
+end
+
 function Game:update(dt)
     Slab.Update(dt)
     self:menu()
     self.runtime = self.runtime + dt
-    if love.keyboard.isDown("up") then
-        local posy = self.camera.body:getY()
-        self.camera.body:setY(posy - self.camera.scrollSpeedY * dt)
-    elseif love.keyboard.isDown("down") then
-        local posy = self.camera.body:getY()
-        self.camera.body:setY(posy + self.camera.scrollSpeedY * dt)
-    end
-    if love.keyboard.isDown("left") then
-        local posy = self.camera.body:getX()
-        self.camera.body:setX(posy - self.camera.scrollSpeedX * dt)
-    elseif love.keyboard.isDown("right") then
-        local posy = self.camera.body:getX()
-        self.camera.body:setX(posy + self.camera.scrollSpeedX * dt)
-    end
-    if self.selected and Utils.tableIsEmpty(self.selected.orders) then
-        if love.keyboard.isDown("q") then
-            self.selected:turn(dt, -1)
-        elseif love.keyboard.isDown("e") then
-            self.selected:turn(dt, 1)
-        end
-        if love.keyboard.isDown("w") then
-            self.selected:thrust(dt, 1)
-        elseif love.keyboard.isDown("s") then
-            self.selected:thrust(dt, -1)
-        end
-    end
 
-    -- TODO: TIDY THIS FFS
-    if Slab.IsVoidClicked(1) then
-        local x,y = love.mouse.getPosition()
-        love.graphics.push()
-        self:viewportTransform()
-        local wx, wy = love.graphics.inverseTransformPoint(x, y)
-        love.graphics.pop()
-        self.selected = self:findTankAtCoords(wx, wy)
-    elseif Slab.IsVoidClicked(2) then
-        if self.selected then
-            local x,y = love.mouse.getPosition()
-            love.graphics.push()
-            self:viewportTransform()
-            local wx, wy = love.graphics.inverseTransformPoint(x, y)
-            love.graphics.pop()
-            local target = self:findMoveTargetAtCoords(wx, wy)
-            if not target then
-                target = Waypoint(self, {x=wx, y=wy})
-            end
-            local order = MoveOrder{
-                target = target,
-            }
-            if love.keyboard.isDown("lshift") then
-                self.selected:appendOrder(order)
-            else
-                self.selected:setOrder(order)
-            end
-        end
-    end
+    self:processInput(dt)
 
     for entity in self:entities() do
         entity:update(dt)
@@ -172,15 +149,6 @@ function Game:keypressed(key, scancode, isrepeat)
 end
 
 function Game:keyreleased(key, scancode)
-    if key == "=" then
-        self.camera:zoomIn()
-    elseif key == "-" then
-        self.camera:zoomOut()
-    elseif self.selected and Utils.tableIsEmpty(self.selected.orders) then
-        if key == "space" then
-            self.selected:fire()
-        end
-    end
 end
 
 function Game:findMoveTargetAtCoords(x, y)
@@ -239,6 +207,94 @@ function Game:entities(allowedEntityTypes)
             end
         end
     end
+end
+
+function Game:getMousePositionInWorld()
+    local x, y = love.mouse.getPosition()
+    love.graphics.push()
+    self:viewportTransform()
+    local wx, wy = love.graphics.inverseTransformPoint(x, y)
+    love.graphics.pop()
+    return wx, wy
+end
+
+-- Input Actions
+
+function Game:selectedTurnLeft(dt)
+    if self.selected and Utils.tableIsEmpty(self.selected.orders) then
+        self.selected:turn(dt, -1)
+    end
+end
+
+function Game:selectedTurnRight(dt)
+    if self.selected and Utils.tableIsEmpty(self.selected.orders) then
+        self.selected:turn(dt, 1)
+    end
+end
+
+function Game:selectedMoveForward(dt)
+    if self.selected and Utils.tableIsEmpty(self.selected.orders) then
+        self.selected:thrust(dt, 1)
+    end
+end
+
+function Game:selectedMoveBackward(dt)
+    if self.selected and Utils.tableIsEmpty(self.selected.orders) then
+        self.selected:thrust(dt, -1)
+    end
+end
+
+function Game:selectedFire(dt)
+    if self.selected and Utils.tableIsEmpty(self.selected.orders) then
+        self.selected:fire()
+    end
+end
+
+function Game:selectAtCursor(dt)
+    print("selectAtCursor")
+    local x, y = self:getMousePositionInWorld()
+    self.selected = self:findTankAtCoords(x, y)
+end
+
+function Game:interactAtCursor(dt)
+    print("interactAtCursor")
+    if self.selected then
+        local x, y = self:getMousePositionInWorld()
+        local target = self:findMoveTargetAtCoords(x, y)
+        if not target then
+            target = Waypoint(self, {x=x, y=y})
+        end
+        local order = MoveOrder{target = target}
+        if love.keyboard.isDown("lshift") then
+            self.selected:appendOrder(order)
+        else
+            self.selected:setOrder(order)
+        end
+    end
+end
+
+function Game:cameraMoveUp(dt)
+    self.camera:move(0, -self.camera.scrollSpeedY * dt)
+end
+
+function Game:cameraMoveDown(dt)
+    self.camera:move(0, self.camera.scrollSpeedY * dt)
+end
+
+function Game:cameraMoveLeft(dt)
+    self.camera:move(-self.camera.scrollSpeedX * dt, 0)
+end
+
+function Game:cameraMoveRight(dt)
+    self.camera:move(self.camera.scrollSpeedX * dt, 0)
+end
+
+function Game:cameraZoomIn(dt)
+    self.camera:zoomIn(dt)
+end
+
+function Game:cameraZoomOut(dt)
+    self.camera:zoomOut(dt)
 end
 
 return Game

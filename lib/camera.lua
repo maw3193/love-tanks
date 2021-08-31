@@ -71,16 +71,16 @@ function Camera:update(dt)
     self:window()
 end
 
-function Camera:zoomIn()
-    self.zoomLevel = self.zoomLevel * self.zoomMult
+function Camera:zoomIn(dt)
+    self.zoomLevel = self.zoomLevel * self.zoomMult * dt
     local w, h = love.window.getMode()
     w = w / self.zoomLevel
     h = h / self.zoomLevel
     self:createSensor(w, h)
 end
 
-function Camera:zoomOut()
-    self.zoomLevel = self.zoomLevel / self.zoomMult
+function Camera:zoomOut(dt)
+    self.zoomLevel = self.zoomLevel / (self.zoomMult * dt)
     local w, h = love.window.getMode()
     w = w / self.zoomLevel
     h = h / self.zoomLevel
