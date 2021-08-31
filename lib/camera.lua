@@ -7,6 +7,8 @@ local Camera = Entity:subclass("Camera")
 Camera.cameraSensor = nil
 Camera.scrollSpeedX = 50
 Camera.scrollSpeedY = 50
+Camera.zoomMin = 0.1
+Camera.zoomMax = 10
 Camera.zoomMult = 1.1
 Camera.showWindow = false
 
@@ -71,16 +73,22 @@ function Camera:update(dt)
     self:window()
 end
 
-function Camera:zoomIn(dt)
-    self.zoomLevel = self.zoomLevel * self.zoomMult * dt
+function Camera:zoomIn()
+    self.zoomLevel = self.zoomLevel * self.zoomMult
+    if self.zoomLevel > self.zoomMax then
+        self.zoomLevel = self.zoomMax
+    end
     local w, h = love.window.getMode()
     w = w / self.zoomLevel
     h = h / self.zoomLevel
     self:createSensor(w, h)
 end
 
-function Camera:zoomOut(dt)
-    self.zoomLevel = self.zoomLevel / (self.zoomMult * dt)
+function Camera:zoomOut()
+    self.zoomLevel = self.zoomLevel / (self.zoomMult)
+    if self.zoomLevel < self.zoomMin then
+        self.zoomLevel = self.zoomMin
+    end
     local w, h = love.window.getMode()
     w = w / self.zoomLevel
     h = h / self.zoomLevel

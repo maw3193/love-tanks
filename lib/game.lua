@@ -290,11 +290,11 @@ function Game:cameraMoveRight(dt)
 end
 
 function Game:cameraZoomIn(dt)
-    self.camera:zoomIn(dt)
+    self.camera:zoomIn()
 end
 
 function Game:cameraZoomOut(dt)
-    self.camera:zoomOut(dt)
+    self.camera:zoomOut()
 end
 
 return Game
