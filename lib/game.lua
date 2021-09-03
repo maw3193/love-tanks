@@ -7,12 +7,14 @@ local Camera = require "lib/camera"
 local MoveOrder = require "lib/move-order"
 local Waypoint = require "lib/waypoint"
 local Utils = require "lib/utils"
+local InputSelect = require "lib/menu/input-select"
 
 local Game = Class("Game")
 
 Game.worldFriction = 1
 Game.selected = nil -- an Entity
 Game.camera = nil -- a Camera Entity
+Game.lastKey = nil -- the last key (or mouse button) pressed
 
 function Game:initialize()
     self.world = love.physics.newWorld()
@@ -39,6 +41,7 @@ function Game:initialize()
         {key = 1, name = "Select At Cursor", action = self.selectAtCursor},
         {key = 2, name = "Interact At Cursor", action = self.interactAtCursor},
     }
+    self.inputSelectMenu = InputSelect{game=self}
 end
 
 function Game:addEntity(entity)
@@ -52,6 +55,7 @@ function Game:menu()
             if Slab.MenuItemChecked("Camera Info", self.camera.showWindow) then
                self.camera.showWindow = not self.camera.showWindow
             end
+
             if self.selected then
                 if Slab.MenuItemChecked("Selected Entity Info", self.selected.showWindow) then
                     self.selected.showWindow = not self.selected.showWindow
@@ -60,6 +64,9 @@ function Game:menu()
                 Slab.MenuItemChecked("Selected Entity info", false, {Enabled=false})
             end
 
+            if Slab.MenuItemChecked("Input Selector", self.inputSelectMenu.isOpen) then
+                self.inputSelectMenu.isOpen = not self.inputSelectMenu.isOpen
+            end
             Slab.EndMenu()
         end
         Slab.EndMainMenuBar()
@@ -76,6 +83,8 @@ function Game:processInput(dt)
             if Slab.IsVoidClicked(item.key) then
                 item.action(self, dt)
             end
+        elseif item.key == nil then
+            -- input is unset, do nothing
         else
             assert(false, "key '"..tostring(item.key).."' is an unexpected type: "..type(item.key))
         end
@@ -93,6 +102,7 @@ function Game:update(dt)
         entity:update(dt)
     end
 
+    self.inputSelectMenu:window()
     self.world:update(dt)
 end
 
@@ -143,12 +153,14 @@ end
 
 function Game:mouseReleased(x, y, button, isTouch, presses)
     -- NOTE: clicking into the game area doesn't use this because it's hard to catch whether it touched a Slab window instead
+    self.lastKey = button
 end
 
 function Game:keypressed(key, scancode, isrepeat)
 end
 
 function Game:keyreleased(key, scancode)
+    self.lastKey = key
 end
 
 function Game:findMoveTargetAtCoords(x, y)
