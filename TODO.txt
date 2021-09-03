@@ -5,7 +5,7 @@ This is written to play around with physical entities as something other than a 
 Bugs
 ====
 
-* Really untidy click behaviour!
+* Zooming in and out seems centred on world origin
 
 Features
 ========
