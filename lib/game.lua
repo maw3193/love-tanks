@@ -32,6 +32,7 @@ function Game:initialize()
         {key = "w", name = "Selected Move Forward", action = self.selectedMoveForward},
         {key = "s", name = "Selected Move Backward", action = self.selectedMoveBackward},
         {key = "space", name = "Selected Fire", action = self.selectedFire},
+        {key = "backspace", name = "Selected Clear Orders", action = self.selectedClearOrders},
         {key = "up", name = "Camera Move Up", action = self.cameraMoveUp},
         {key = "down", name = "Camera Move Down", action = self.cameraMoveDown},
         {key = "left", name = "Camera Move Left", action = self.cameraMoveLeft},
@@ -259,6 +260,12 @@ end
 function Game:selectedFire(dt)
     if self.selected and Utils.tableIsEmpty(self.selected.orders) then
         self.selected:fire()
+    end
+end
+
+function Game:selectedClearOrders(dt)
+    if self.selected then
+        self.selected:clearOrders()
     end
 end
 
