@@ -9,9 +9,12 @@ Bugs
 
 Features
 ========
+* Saving & Loading
+  - game config, auto save/load
+  - world state, new/save/load buttons
 * UI
+  - Refactor entity info and camera info into separate menus
   - one window for selected entity
-  - key binding menu
   - Creating a new order menu
   - time controls
 * Terrain
