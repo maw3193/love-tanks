@@ -15,6 +15,15 @@ Game.worldFriction = 1
 Game.selected = nil -- an Entity
 Game.camera = nil -- a Camera Entity
 Game.lastKey = nil -- the last key (or mouse button) pressed
+Game.inputMap = nil
+Game.inputMapByName = nil
+
+function Game:generateInputMapByName()
+    self.inputMapByName = {}
+    for _,mapping in ipairs(self.inputMap) do
+        self.inputMapByName[mapping.name] = mapping
+    end
+end
 
 function Game:initialize()
     self.world = love.physics.newWorld()
@@ -42,7 +51,25 @@ function Game:initialize()
         {key = 1, name = "Select At Cursor", action = self.selectAtCursor},
         {key = 2, name = "Interact At Cursor", action = self.interactAtCursor},
     }
+    self:generateInputMapByName()
     self.inputSelectMenu = InputSelect{game=self}
+end
+
+function Game:setProperties(properties)
+    self.camera.body:setPosition(properties.cameraX, properties.cameraY)
+    for name,key in pairs(properties.inputMap) do
+        self.inputMapByName[name].key = key
+    end
+end
+
+function Game:getProperties()
+    local properties
+    properties.cameraX, properties.cameraY = self.camera.body:getPosition()
+    properties.inputMap = {}
+    for i,mapping in ipairs(self.inputMap) do
+        properties.inputMap[mapping.name] = mapping.key
+    end
+    return properties
 end
 
 function Game:addEntity(entity)
