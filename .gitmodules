@@ -10,3 +10,6 @@
 [submodule "namegen"]
 	path = namegen
 	url = https://github.com/LukeMS/lua-namegen
+[submodule "TSerial"]
+	path = thirdparty/TSerial
+	url = https://github.com/zhsso/Tserial.lua
