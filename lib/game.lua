@@ -62,14 +62,12 @@ end
 
 function Game:saveConfig()
     local savetext = json.encode(self:getConfig())
-    print(savetext)
     local savedir = love.filesystem.getSaveDirectory()
     if not love.filesystem.getInfo(self.configFilename) then
         love.filesystem.newFile(self.configFilename)
     end
     local success, message = love.filesystem.write(self.configFilename, savetext)
     assert(success, "Failed to save config: "..tostring(message))
-    print("Saved to "..self.configFilename)
 end
 
 function Game:loadConfig()
@@ -334,13 +332,11 @@ function Game:selectedClearOrders(dt)
 end
 
 function Game:selectAtCursor(dt)
-    print("selectAtCursor")
     local x, y = self:getMousePositionInWorld()
     self.selected = self:findTankAtCoords(x, y)
 end
 
 function Game:interactAtCursor(dt)
-    print("interactAtCursor")
     if self.selected then
         local x, y = self:getMousePositionInWorld()
         local target = self:findMoveTargetAtCoords(x, y)
