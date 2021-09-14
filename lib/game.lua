@@ -18,7 +18,7 @@ Game.camera = nil -- a Camera Entity
 Game.lastKey = nil -- the last key (or mouse button) pressed
 Game.inputMap = nil
 Game.inputMapByName = nil
-Game.saveFilename = "game.txt"
+Game.configFilename = "config.json"
 
 function Game:generateInputMapByName()
     self.inputMapByName = {}
@@ -55,44 +55,53 @@ function Game:initialize()
     }
     self:generateInputMapByName()
     self.inputSelectMenu = InputSelect{game=self}
-    if love.filesystem.getInfo(self.saveFilename) then
-        self:load()
+    if love.filesystem.getInfo(self.configFilename) then
+        self:loadConfig()
     end
 end
 
-function Game:save()
-    local savetext = json.encode(self:getProperties())
+function Game:saveConfig()
+    local savetext = json.encode(self:getConfig())
     print(savetext)
     local savedir = love.filesystem.getSaveDirectory()
-    if not love.filesystem.getInfo(self.saveFilename) then
-        love.filesystem.newFile(self.saveFilename)
+    if not love.filesystem.getInfo(self.configFilename) then
+        love.filesystem.newFile(self.configFilename)
     end
-    local success, message = love.filesystem.write(self.saveFilename, savetext)
+    local success, message = love.filesystem.write(self.configFilename, savetext)
     assert(success, "Failed to save config: "..tostring(message))
-    print("Saved to "..self.saveFilename)
+    print("Saved to "..self.configFilename)
 end
 
-function Game:load()
-    local contents, extra = love.filesystem.read(self.saveFilename)
+function Game:loadConfig()
+    local contents, extra = love.filesystem.read(self.configFilename)
     assert(contents, "Failed to load config: "..extra)
-    local properties = json.decode(contents)
-    self:setProperties(properties)
+    local config = json.decode(contents)
+    self:setConfig(config)
+end
+
+function Game:setConfig(config)
+    for name,key in pairs(config.inputMap) do
+        self.inputMapByName[name].key = key
+    end
+end
+
+function Game:getConfig()
+    local config = {
+        inputMap = {},
+    }
+    for i,mapping in ipairs(self.inputMap) do
+        config.inputMap[mapping.name] = mapping.key
+    end
+    return config
 end
 
 function Game:setProperties(properties)
     self.camera.body:setPosition(properties.cameraX, properties.cameraY)
-    for name,key in pairs(properties.inputMap) do
-        self.inputMapByName[name].key = key
-    end
 end
 
 function Game:getProperties()
     local properties = {}
     properties.cameraX, properties.cameraY = self.camera.body:getPosition()
-    properties.inputMap = {}
-    for i,mapping in ipairs(self.inputMap) do
-        properties.inputMap[mapping.name] = mapping.key
-    end
     return properties
 end
 
@@ -216,7 +225,6 @@ function Game:keyreleased(key, scancode)
 end
 
 function Game:quit()
-    self:save()
     return false
 end
 

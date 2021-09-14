@@ -14,6 +14,7 @@ function InputSelect:uiControls()
     if self.setIndex and self.game.lastKey then
         self.game.inputMap[self.setIndex].key = self.game.lastKey
         self.setIndex = nil
+        self.game:saveConfig()
     end
     for i, mapping in ipairs(self.game.inputMap) do
         Slab.SetLayoutColumn(1)
