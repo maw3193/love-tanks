@@ -1,5 +1,6 @@
 local Slab = require "thirdparty/Slab"
 local Class = require "thirdparty/middleclass/middleclass"
+local json = require "thirdparty/json/json"
 
 local Config = require "lib/config"
 local Tank = require "lib/tank"
@@ -17,6 +18,7 @@ Game.camera = nil -- a Camera Entity
 Game.lastKey = nil -- the last key (or mouse button) pressed
 Game.inputMap = nil
 Game.inputMapByName = nil
+Game.saveFilename = "game.txt"
 
 function Game:generateInputMapByName()
     self.inputMapByName = {}
@@ -53,6 +55,28 @@ function Game:initialize()
     }
     self:generateInputMapByName()
     self.inputSelectMenu = InputSelect{game=self}
+    if love.filesystem.getInfo(self.saveFilename) then
+        self:load()
+    end
+end
+
+function Game:save()
+    local savetext = json.encode(self:getProperties())
+    print(savetext)
+    local savedir = love.filesystem.getSaveDirectory()
+    if not love.filesystem.getInfo(self.saveFilename) then
+        love.filesystem.newFile(self.saveFilename)
+    end
+    local success, message = love.filesystem.write(self.saveFilename, savetext)
+    assert(success, "Failed to save config: "..tostring(message))
+    print("Saved to "..self.saveFilename)
+end
+
+function Game:load()
+    local contents, extra = love.filesystem.read(self.saveFilename)
+    assert(contents, "Failed to load config: "..extra)
+    local properties = json.decode(contents)
+    self:setProperties(properties)
 end
 
 function Game:setProperties(properties)
@@ -63,7 +87,7 @@ function Game:setProperties(properties)
 end
 
 function Game:getProperties()
-    local properties
+    local properties = {}
     properties.cameraX, properties.cameraY = self.camera.body:getPosition()
     properties.inputMap = {}
     for i,mapping in ipairs(self.inputMap) do
@@ -189,6 +213,11 @@ end
 
 function Game:keyreleased(key, scancode)
     self.lastKey = key
+end
+
+function Game:quit()
+    self:save()
+    return false
 end
 
 function Game:findMoveTargetAtCoords(x, y)

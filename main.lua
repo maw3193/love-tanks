@@ -17,6 +17,7 @@ function love.load(arg)
     if arg[#arg] == "-debug" then require("mobdebug").start() end
     love.window.setMode(Config.width, Config.height)
     love.window.setTitle("Tanks!!!")
+    love.filesystem.setIdentity("LoveTanks")
     math.randomseed(os.time())
 
 
@@ -65,4 +66,8 @@ end
 
 function love.keyreleased(...)
     game:keyreleased(...)
+end
+
+function love.quit(...)
+    return game:quit(...)
 end
