@@ -5,6 +5,7 @@ love.physics.setMeter(10)
 local Tank = require "lib/tank"
 local Waypoint = require "lib/waypoint"
 local MoveOrder = require "lib/move-order"
+local AttackOrder = require "lib/attack-order"
 local WanderOrder = require "lib/wander-order"
 local Config = require "lib/config"
 local Game = require "lib/game"
@@ -39,6 +40,7 @@ function love.load(arg)
             MoveOrder{target = Waypoint(game, {x=100, y=50})},
             MoveOrder{target = Waypoint(game, {x=100, y=100})},
             MoveOrder{target = Waypoint(game, {x=100, y=-100})},
+            AttackOrder{target = tank},
             WanderOrder(),
         },
     })
