@@ -23,10 +23,14 @@ Features
 * Terrain
   - a map grid of some kind.
 * Combat
-  - 
+  -
 * AI
   - entities that can move towards a point/object DONE
   - able to attack each other DONE
   - variant of WanderOrder, HuntOrder, which generates AttackOrders
+    - when at the top of the order queue, it generates move orders
+    - all tanks have a sensor to check if they detect something new.
+    - HuntOrder generates an AttackOrder in response.
+    - what happens to old moveOrders?
 * multiplayer???
   - events that get passed over network.
