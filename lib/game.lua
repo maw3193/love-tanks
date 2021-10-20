@@ -20,6 +20,7 @@ Game.lastKey = nil -- the last key (or mouse button) pressed
 Game.inputMap = nil
 Game.inputMapByName = nil
 Game.configFilename = "config.json"
+Game.saveDialogOpen = false
 
 function Game:generateInputMapByName()
     self.inputMapByName = {}
@@ -97,11 +98,15 @@ end
 
 function Game:setProperties(properties)
     self.camera.body:setPosition(properties.cameraX, properties.cameraY)
+    -- TODO set selected entity
+    --   search all entities by name for one that matches the ID
+
 end
 
 function Game:getProperties()
     local properties = {}
     properties.cameraX, properties.cameraY = self.camera.body:getPosition()
+    properties.selected = tostring(self.selected)
     return properties
 end
 
@@ -113,6 +118,14 @@ end
 function Game:menu()
     if Slab.BeginMainMenuBar() then
         if Slab.BeginMenu("Window") then
+            if Slab.MenuItem("Save...") then
+                self.saveDialogOpen = true
+            end
+
+            if Slab.MenuItem("Load...") then
+                print("Load")
+            end
+
             if Slab.MenuItemChecked("Camera Info", self.camera.showWindow) then
                self.camera.showWindow = not self.camera.showWindow
             end
@@ -131,6 +144,17 @@ function Game:menu()
             Slab.EndMenu()
         end
         Slab.EndMainMenuBar()
+    end
+    if self.saveDialogOpen then
+        local result = Slab.FileDialog({Type = "savefile"})
+
+        if result.Button ~= "" then
+            if result.Files and #result.Files then
+                print("Save to "..tostring(result.Files[1]))
+            end
+            self.saveDialogOpen = false
+        end
+
     end
 end
 
