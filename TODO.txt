@@ -12,6 +12,9 @@ Features
 ========
 * Saving & Loading
   - world state, new/save/load buttons
+    - stick class name in the dict.
+    - how do I get the class from the name...
+    - assume I already know the type, I guess...
 * UI
   - Refactor entity info and camera info into separate menus
   - one window for selected entity
