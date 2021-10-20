@@ -3,9 +3,11 @@ local Slab = require "thirdparty/Slab"
 
 local InputSelect = Menu:subclass("InputSelect")
 
+InputSelect.startsOpen = false
 InputSelect.setIndex = nil
 
 function InputSelect:initialize(properties)
+    Menu.initialize(self, properties)
     self.game = properties.game
 end
 

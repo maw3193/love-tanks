@@ -9,6 +9,7 @@ local MoveOrder = require "lib/move-order"
 local Waypoint = require "lib/waypoint"
 local Utils = require "lib/utils"
 local InputSelect = require "lib/menu/input-select"
+local EntityInfo = require "lib/menu/entity-info"
 
 local Game = Class("Game")
 
@@ -55,6 +56,7 @@ function Game:initialize()
     }
     self:generateInputMapByName()
     self.inputSelectMenu = InputSelect{game=self}
+    self.entityInfoMenu = EntityInfo{}
     if love.filesystem.getInfo(self.configFilename) then
         self:loadConfig()
     end
@@ -117,7 +119,7 @@ function Game:menu()
 
             if self.selected then
                 if Slab.MenuItemChecked("Selected Entity Info", self.selected.showWindow) then
-                    self.selected.showWindow = not self.selected.showWindow
+                    self.entityInfoMenu.isOpen = not self.entityInfoMenu.isOpen
                 end
             else
                 Slab.MenuItemChecked("Selected Entity info", false, {Enabled=false})
@@ -152,6 +154,7 @@ end
 
 function Game:update(dt)
     Slab.Update(dt)
+
     self:menu()
     self.runtime = self.runtime + dt
 
@@ -162,6 +165,7 @@ function Game:update(dt)
     end
 
     self.inputSelectMenu:window()
+    self.entityInfoMenu:window()
     self.world:update(dt)
 end
 
@@ -334,6 +338,7 @@ end
 function Game:selectAtCursor(dt)
     local x, y = self:getMousePositionInWorld()
     self.selected = self:findTankAtCoords(x, y)
+    self.entityInfoMenu.entity = self.selected
 end
 
 function Game:interactAtCursor(dt)
