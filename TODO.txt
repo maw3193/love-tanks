@@ -22,10 +22,11 @@ Features
   - time controls
 * Terrain
   - a map grid of some kind.
-* tanks
-  - shooting each other with guns
+* Combat
+  - 
 * AI
   - entities that can move towards a point/object DONE
-  - able to attack each other
+  - able to attack each other DONE
+  - variant of WanderOrder, HuntOrder, which generates AttackOrders
 * multiplayer???
   - events that get passed over network.
